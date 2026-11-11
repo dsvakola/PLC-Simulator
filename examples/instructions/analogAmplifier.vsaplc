@@ -225,5 +225,8 @@
       }
     ],
     "fixedProps": {}
+  },
+  "scada": {
+    "items": []
   }
 }

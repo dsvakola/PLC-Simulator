@@ -277,6 +277,10 @@ export interface SimFrame {
   /** [block id, value on its output]. */
   blocks: Array<[number, boolean | number]>;
   clock: Clock;
+  /** Markers M1 to M27. */
+  markers: boolean[];
+  /** Analog markers AM1 to AM16. */
+  analogMarkers: number[];
 }
 
 /** RUN. Rejects with the diagram's mistakes (DiagramError[]). */
@@ -306,7 +310,39 @@ export interface Project {
   ladder: Ladder;
   fbd: Diagram;
   panel: Panel;
+  scada: Scada;
 }
+
+// ---- SCADA screen (mirrors plc_core::scada) ----
+
+export interface ScadaItem {
+  id: number;
+  /** "button", "switch", "lamp", "number", "bar", "slider", "text", "tank", "motor", "valve", "conveyor". */
+  kind: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  label: string;
+  /** The PLC point: "I1", "Q2", "M3", "AM1", "AI2". */
+  tag: string;
+  props: Record<string, string>;
+}
+
+export interface Scada {
+  items: ScadaItem[];
+}
+
+export interface ScadaError {
+  item: number | null;
+  message: string;
+}
+
+export const checkScada = (scada: Scada): Promise<ScadaError[]> => invoke("check_scada", { scada });
+/** The SCADA screen switches marker Mn. */
+export const simMarker = (n: number, on: boolean): Promise<void> => invoke("sim_marker", { n, on });
+/** The SCADA screen sets analog marker AMn. */
+export const simAnalogMarker = (n: number, value: number): Promise<void> => invoke("sim_analog_marker", { n, value: Math.round(value) });
 
 export interface OpenedProject {
   path: string;

@@ -52,6 +52,10 @@ pub struct Frame {
     /// Output value of every block, for drawing the diagram live.
     pub blocks: Vec<(u32, Value)>,
     pub clock: Clock,
+    /// Markers M1 to M27, for the SCADA screen.
+    pub markers: Vec<bool>,
+    /// Analog markers AM1 to AM16, for the SCADA screen.
+    pub analog_markers: Vec<i32>,
 }
 
 impl Frame {
@@ -64,6 +68,8 @@ impl Frame {
             && self.tripped == o.tripped
             && self.devices == o.devices
             && self.blocks == o.blocks
+            && self.markers == o.markers
+            && self.analog_markers == o.analog_markers
     }
 }
 
@@ -173,6 +179,17 @@ impl Simulator {
             }
         }
         self.refresh();
+    }
+
+    /// The SCADA screen switches marker Mn (a marker whose input is not wired
+    /// in the program keeps what the screen writes).
+    pub fn set_marker(&mut self, n: usize, on: bool) {
+        self.fbd.set_marker(n, on);
+    }
+
+    /// The SCADA screen sets analog marker AMn (a slider).
+    pub fn set_analog_marker(&mut self, n: usize, value: i32) {
+        self.fbd.set_analog_flag(n, value);
     }
 
     /// Sets the slider of a potentiometer (%) or a PT100 (°C).
@@ -322,6 +339,12 @@ impl Simulator {
             devices,
             blocks: self.fbd.live_values(),
             clock: self.clock,
+            markers: (1..=Limits::default().markers as usize)
+                .map(|n| self.fbd.marker(n))
+                .collect(),
+            analog_markers: (1..=Limits::default().analog_flags as usize)
+                .map(|n| self.fbd.analog_flag(n))
+                .collect(),
         }
     }
 
@@ -337,3 +360,75 @@ impl Simulator {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod scada_tests {
+    use super::*;
+    use crate::fbd::{Block, BlockKind, Wire};
+    use crate::panel::Panel;
+
+    fn blk(id: u32, kind: BlockKind) -> Block {
+        Block {
+            id,
+            kind,
+            x: 0.0,
+            y: 0.0,
+            label: String::new(),
+            title_dx: 0.0,
+            title_dy: 0.0,
+            label_dx: 0.0,
+            label_dy: 0.0,
+        }
+    }
+
+    #[test]
+    fn the_screen_writes_markers_and_analog_markers() {
+        // M1 -> Q1, and AM1 -> threshold 500 -> Q2.
+        let d = Diagram {
+            blocks: vec![
+                blk(1, BlockKind::Flag { n: 1 }),
+                blk(2, BlockKind::Output { n: 1 }),
+                blk(3, BlockKind::AnalogFlag { n: 1 }),
+                blk(4, BlockKind::AnalogThreshold { on: 500, off: 400 }),
+                blk(5, BlockKind::Output { n: 2 }),
+            ],
+            wires: vec![
+                Wire {
+                    from_block: 1,
+                    from_pin: 0,
+                    to_block: 2,
+                    to_pin: 0,
+                    points: vec![],
+                    corners: vec![],
+                },
+                Wire {
+                    from_block: 3,
+                    from_pin: 0,
+                    to_block: 4,
+                    to_pin: 0,
+                    points: vec![],
+                    corners: vec![],
+                },
+                Wire {
+                    from_block: 4,
+                    from_pin: 0,
+                    to_block: 5,
+                    to_pin: 0,
+                    points: vec![],
+                    corners: vec![],
+                },
+            ],
+            scan_ms: 10,
+        };
+        let mut s = Simulator::new(&d, &Panel::default(), Clock::default()).expect("valid");
+        s.set_marker(1, true);
+        s.set_analog_marker(1, 600);
+        s.advance(30.0);
+        let f = s.frame();
+        assert!(f.outputs[0] && f.outputs[1]);
+        assert!(f.markers[0]);
+        assert_eq!(f.analog_markers[0], 600);
+        assert_eq!(f.markers.len(), 27);
+        assert_eq!(f.analog_markers.len(), 16);
+    }
+}

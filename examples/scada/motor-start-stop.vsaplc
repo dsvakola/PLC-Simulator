@@ -1,0 +1,298 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "SCADA: the operator starts and stops a motor from the screen. The screen's Start button writes marker M1 and Stop writes M2; the program latches M3 = (M1 OR M3) AND NOT M2 and runs the motor on Q1. The Running lamp and the motor symbol show Q1. Press F3, open the SCADA Screen tab and use the buttons.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "flag",
+        "n": 1,
+        "x": 100,
+        "y": 100,
+        "label": "Start (screen)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "flag",
+        "n": 2,
+        "x": 100,
+        "y": 260,
+        "label": "Stop (screen)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "or",
+        "inputs": 2,
+        "x": 260,
+        "y": 100,
+        "label": "",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "not",
+        "x": 260,
+        "y": 260,
+        "label": "",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 5,
+        "k": "and",
+        "inputs": 2,
+        "x": 420,
+        "y": 160,
+        "label": "",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 6,
+        "k": "flag",
+        "n": 3,
+        "x": 580,
+        "y": 180,
+        "label": "Running memory",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 7,
+        "k": "output",
+        "n": 1,
+        "x": 760,
+        "y": 180,
+        "label": "Motor",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 6,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 1,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 5,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 4,
+        "fromPin": 0,
+        "toBlock": 5,
+        "toPin": 1,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 5,
+        "fromPin": 0,
+        "toBlock": 6,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 6,
+        "fromPin": 0,
+        "toBlock": 7,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "motor",
+        "x": 440,
+        "y": 830,
+        "label": "Motor",
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 465.2,
+            "y": 1086
+          },
+          {
+            "x": 90,
+            "y": 1086
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1095
+          },
+          {
+            "x": 135,
+            "y": 1095
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.g",
+        "to": "qcon.Q1g",
+        "color": "earth",
+        "points": [
+          {
+            "x": 610.8,
+            "y": 1104
+          },
+          {
+            "x": 180,
+            "y": 1104
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  },
+  "scada": {
+    "items": [
+      {
+        "id": 1,
+        "kind": "text",
+        "x": 40,
+        "y": 30,
+        "w": 600,
+        "h": 40,
+        "label": "Pump station - motor control",
+        "tag": "",
+        "props": {
+          "size": "30"
+        }
+      },
+      {
+        "id": 2,
+        "kind": "button",
+        "x": 80,
+        "y": 140,
+        "w": 90,
+        "h": 90,
+        "label": "Start",
+        "tag": "M1",
+        "props": {
+          "color": "green"
+        }
+      },
+      {
+        "id": 3,
+        "kind": "button",
+        "x": 220,
+        "y": 140,
+        "w": 90,
+        "h": 90,
+        "label": "Stop",
+        "tag": "M2",
+        "props": {
+          "color": "red"
+        }
+      },
+      {
+        "id": 4,
+        "kind": "lamp",
+        "x": 380,
+        "y": 140,
+        "w": 80,
+        "h": 90,
+        "label": "Running",
+        "tag": "Q1",
+        "props": {
+          "color": "green"
+        }
+      },
+      {
+        "id": 5,
+        "kind": "motor",
+        "x": 540,
+        "y": 140,
+        "w": 120,
+        "h": 100,
+        "label": "Pump motor",
+        "tag": "Q1",
+        "props": {}
+      },
+      {
+        "id": 6,
+        "kind": "conveyor",
+        "x": 80,
+        "y": 320,
+        "w": 380,
+        "h": 80,
+        "label": "Conveyor",
+        "tag": "Q1",
+        "props": {}
+      }
+    ]
+  }
+}

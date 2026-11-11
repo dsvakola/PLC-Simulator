@@ -81,6 +81,12 @@ fn check_panel(panel: plc_core::panel::Panel) -> Vec<plc_core::panel::PanelError
     plc_core::panel::check(&panel)
 }
 
+/// Checks the SCADA screen.
+#[tauri::command]
+fn check_scada(scada: plc_core::scada::Scada) -> Vec<plc_core::scada::ScadaError> {
+    plc_core::scada::check(&scada)
+}
+
 pub fn run() {
     let result = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
@@ -97,6 +103,9 @@ pub fn run() {
             sim::sim_value,
             sim::sim_pause,
             sim::sim_clock,
+            sim::sim_marker,
+            sim::sim_analog_marker,
+            check_scada,
             files::new_project,
             files::save_project,
             files::open_project,

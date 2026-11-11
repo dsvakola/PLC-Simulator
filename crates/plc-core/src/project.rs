@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::fbd::{self, Diagram};
 use crate::panel::{self, Panel};
 use crate::plc::Ladder;
+use crate::scada::{self, Scada};
 
 /// Version of the project file format written by this program.
 /// 1: version 0.0.1 (the first control panel, with supply strips).
@@ -41,6 +42,9 @@ pub struct Project {
     /// The control panel: extra devices and the wires between terminals.
     #[serde(default)]
     pub panel: Panel,
+    /// The SCADA screen: operator items linked to PLC points.
+    #[serde(default)]
+    pub scada: Scada,
 }
 
 fn default_cpu() -> String {
@@ -61,6 +65,7 @@ impl Default for Project {
             ladder: Ladder::default(),
             fbd: Diagram::default(),
             panel: Panel::default(),
+            scada: Scada::default(),
         }
     }
 }
@@ -91,6 +96,9 @@ pub fn validate(p: &Project) -> Result<(), String> {
             "This project has more than {} blocks, which is too many.",
             fbd::MAX_BLOCKS
         ));
+    }
+    if p.scada.items.len() > scada::MAX_ITEMS {
+        return Err("The SCADA screen of this project has too many items.".into());
     }
     if p.panel.devices.len() > panel::MAX_DEVICES || p.panel.wires.len() > panel::MAX_WIRES {
         return Err("The control panel of this project has too many devices or wires.".into());

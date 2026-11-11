@@ -1593,3 +1593,42 @@ dialog.nudge {
   font: inherit;
   font-size: 12px;
 }
+
+/* ---------- SCADA screen ---------- */
+
+.scada-canvas {
+  background: #cdd3dc;
+}
+
+.scada-canvas svg.scada-svg {
+  display: block;
+  user-select: none;
+  touch-action: none;
+}
+
+.scada-svg:not(.simulating) .sitem {
+  cursor: move;
+}
+
+.scada-svg.simulating .sitem.live {
+  cursor: pointer;
+}
+
+.scada-svg .spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: panel-spin 0.5s linear infinite;
+}
+
+.scada-svg .belt {
+  animation: scada-belt 0.6s linear infinite;
+}
+
+@keyframes scada-belt {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(30px);
+  }
+}

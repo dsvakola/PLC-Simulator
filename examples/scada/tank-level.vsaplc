@@ -1,0 +1,421 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "SCADA: a level sensor (the knob on I7, 0-10 V) measures a tank. The program turns it into percent (AM1) and fills the tank with the pump on Q1 when the level is 20 % or less, until it is above 80 %. Q2 lights a high-level alarm at 90 %. The screen shows the tank, the level, the pump and the alarm. Turn the knob on the Control Panel to change the level.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "analogInput",
+        "n": 1,
+        "x": 100,
+        "y": 160,
+        "label": "Level sensor (I7)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "analogAmplifier",
+        "gain": 0.1,
+        "offset": 0,
+        "x": 260,
+        "y": 140,
+        "label": "0-100 %",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "analogFlag",
+        "n": 1,
+        "x": 460,
+        "y": 160,
+        "label": "Level %",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "analogThreshold",
+        "on": 20,
+        "off": 80,
+        "x": 620,
+        "y": 80,
+        "label": "Fill at 20 %, stop above 80 %",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 5,
+        "k": "output",
+        "n": 1,
+        "x": 880,
+        "y": 100,
+        "label": "Fill pump",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 6,
+        "k": "analogThreshold",
+        "on": 90,
+        "off": 85,
+        "x": 620,
+        "y": 260,
+        "label": "Alarm at 90 %",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 7,
+        "k": "output",
+        "n": 2,
+        "x": 880,
+        "y": 280,
+        "label": "High alarm",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 4,
+        "fromPin": 0,
+        "toBlock": 5,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 6,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 6,
+        "fromPin": 0,
+        "toBlock": 7,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "pot",
+        "x": 860,
+        "y": 830,
+        "label": "Level sensor",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "motor",
+        "x": 440,
+        "y": 830,
+        "label": "Fill pump",
+        "props": {}
+      },
+      {
+        "id": 3,
+        "kind": "lamp",
+        "x": 660,
+        "y": 830,
+        "label": "High alarm",
+        "props": {
+          "color": "red"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.p",
+        "to": "icon.I7p",
+        "color": "red",
+        "points": [
+          {
+            "x": 885.2,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 260
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.n",
+        "to": "icon.I7n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 951,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 310
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.out",
+        "to": "icon.I7s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 1016.8,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 360
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 465.2,
+            "y": 1113
+          },
+          {
+            "x": 90,
+            "y": 1113
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1122
+          },
+          {
+            "x": 135,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.g",
+        "to": "qcon.Q1g",
+        "color": "earth",
+        "points": [
+          {
+            "x": 610.8,
+            "y": 1131
+          },
+          {
+            "x": 180,
+            "y": 1131
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d3.p",
+        "to": "qcon.Q2p",
+        "color": "red",
+        "points": [
+          {
+            "x": 702,
+            "y": 1140
+          },
+          {
+            "x": 275,
+            "y": 1140
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d3.n",
+        "to": "qcon.Q2n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 758,
+            "y": 1149
+          },
+          {
+            "x": 320,
+            "y": 1149
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  },
+  "scada": {
+    "items": [
+      {
+        "id": 1,
+        "kind": "text",
+        "x": 40,
+        "y": 30,
+        "w": 600,
+        "h": 40,
+        "label": "Water tank",
+        "tag": "",
+        "props": {
+          "size": "30"
+        }
+      },
+      {
+        "id": 2,
+        "kind": "tank",
+        "x": 80,
+        "y": 110,
+        "w": 160,
+        "h": 230,
+        "label": "Tank",
+        "tag": "AM1",
+        "props": {
+          "min": "0",
+          "max": "100",
+          "unit": "%"
+        }
+      },
+      {
+        "id": 3,
+        "kind": "number",
+        "x": 300,
+        "y": 120,
+        "w": 170,
+        "h": 74,
+        "label": "Level",
+        "tag": "AM1",
+        "props": {
+          "unit": "%"
+        }
+      },
+      {
+        "id": 4,
+        "kind": "bar",
+        "x": 520,
+        "y": 110,
+        "w": 80,
+        "h": 190,
+        "label": "Level",
+        "tag": "AM1",
+        "props": {
+          "min": "0",
+          "max": "100",
+          "unit": "%"
+        }
+      },
+      {
+        "id": 5,
+        "kind": "motor",
+        "x": 300,
+        "y": 240,
+        "w": 120,
+        "h": 100,
+        "label": "Fill pump",
+        "tag": "Q1",
+        "props": {}
+      },
+      {
+        "id": 6,
+        "kind": "valve",
+        "x": 460,
+        "y": 360,
+        "w": 100,
+        "h": 80,
+        "label": "Inlet valve",
+        "tag": "Q1",
+        "props": {}
+      },
+      {
+        "id": 7,
+        "kind": "lamp",
+        "x": 680,
+        "y": 120,
+        "w": 80,
+        "h": 90,
+        "label": "High alarm",
+        "tag": "Q2",
+        "props": {
+          "color": "red"
+        }
+      }
+    ]
+  }
+}

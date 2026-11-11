@@ -157,5 +157,8 @@
       }
     ],
     "fixedProps": {}
+  },
+  "scada": {
+    "items": []
   }
 }

@@ -155,3 +155,15 @@ pub fn sim_pause(state: State<'_, SimState>, paused: bool) {
 pub fn sim_clock(state: State<'_, SimState>, clock: Clock, clock_speed: f64) {
     with_sim(&state, |s| s.set_clock(clock, clock_speed));
 }
+
+/// The SCADA screen switches marker Mn.
+#[tauri::command]
+pub fn sim_marker(state: State<'_, SimState>, n: usize, on: bool) {
+    with_sim(&state, |s| s.set_marker(n, on));
+}
+
+/// The SCADA screen sets analog marker AMn.
+#[tauri::command]
+pub fn sim_analog_marker(state: State<'_, SimState>, n: usize, value: i32) {
+    with_sim(&state, |s| s.set_analog_marker(n, value));
+}

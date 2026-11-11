@@ -14,7 +14,10 @@ import {
   recentFiles,
   saveProject,
   setPrefs,
+  checkScada,
+  simAnalogMarker,
   simClock,
+  simMarker,
   simPause,
   simPress,
   simStart,
@@ -39,6 +42,9 @@ import { PanelEditor } from "./panel/panelEditor";
 import { buildDevicePalette } from "./panel/panelPalette";
 import { setSounds } from "./panel/sound";
 import { readMode, writeMode } from "./panel/inputMode";
+import { ScadaEditor } from "./scada/scadaEditor";
+import { editScadaItem } from "./scada/scadaDialogs";
+import { KINDS, thumb as scadaThumb } from "./scada/scadaDraw";
 import { showAbout } from "./ui/about";
 import { ask, askForm } from "./ui/confirm";
 import { showHelp } from "./ui/help";
@@ -53,7 +59,7 @@ const appWindow = getCurrentWindow();
 
 // ---------- State ----------
 
-type Tab = "program" | "panel";
+type Tab = "program" | "panel" | "scada";
 
 const state = {
   project: null as Project | null,
@@ -66,8 +72,8 @@ const state = {
   version: "",
   tab: "program" as Tab,
   /** Undo and redo buttons and zoom, kept for each tab. */
-  history: { program: [false, false], panel: [false, false] } as Record<Tab, [boolean, boolean]>,
-  zoom: { program: 100, panel: 100 } as Record<Tab, number>,
+  history: { program: [false, false], panel: [false, false], scada: [false, false] } as Record<Tab, [boolean, boolean]>,
+  zoom: { program: 100, panel: 100, scada: 100 } as Record<Tab, number>,
   /** The program is running on the Control Panel. */
   running: false,
   /** The supply has switched off after a short circuit. */
@@ -79,6 +85,8 @@ const state = {
 let editor: FbdEditor;
 let panelEditor: PanelEditor | null = null;
 let panelShown = false;
+let scadaEditor: ScadaEditor;
+let scadaShown = false;
 
 /** What both editors can do, so the menus and keys work on the tab in front. */
 interface ActiveEditor {
@@ -96,7 +104,8 @@ interface ActiveEditor {
   readonly canCopy: boolean;
   readonly canPaste: boolean;
 }
-const active = (): ActiveEditor => (state.tab === "panel" && panelEditor ? panelEditor : editor);
+const active = (): ActiveEditor =>
+  state.tab === "panel" && panelEditor ? panelEditor : state.tab === "scada" && scadaEditor ? scadaEditor : editor;
 
 // ---------- Small helpers ----------
 
@@ -144,13 +153,14 @@ function shell(): void {
       <span class="tool-sep"></span>
       ${tb("tb-check", icons.check, "Check program", "Look for mistakes in the diagram")}
       ${tb("tb-check-panel", icons.check, "Check wiring", "Look for mistakes in the wiring of the panel")}
+      ${tb("tb-check-scada", icons.check, "Check screen", "Look for mistakes on the SCADA screen")}
       <span class="tool-sep"></span>
       ${tb("tb-sim", icons.run, "Simulate", "Run the program on the Control Panel (F3)")}
     </div>
     <nav class="tabs" role="tablist" aria-label="Parts of the project">
       <button class="tab-btn active" id="tab-program" role="tab" aria-selected="true">${icons.program}<span>Program</span></button>
       <button class="tab-btn" id="tab-panel" role="tab" aria-selected="false">${icons.cpu}<span>Control Panel</span></button>
-      <button class="tab-btn" role="tab" disabled title="The SCADA Screen comes in a later step">${icons.watch}<span>SCADA Screen</span></button>
+      <button class="tab-btn" id="tab-scada" role="tab" aria-selected="false">${icons.watch}<span>SCADA Screen</span></button>
     </nav>
     <div class="workbench" id="bench-program">
       <aside class="pane" aria-label="Tools">
@@ -213,6 +223,31 @@ function shell(): void {
         </div>
       </aside>
     </div>
+    <div class="workbench right" id="bench-scada" hidden>
+      <main class="editor" aria-label="SCADA screen">
+        <div class="editor-head">SCADA Screen</div>
+        <div class="diagram-bar" role="toolbar" aria-label="Screen tools">
+          ${zoomButtons("sb")}
+          <span class="tool-sep"></span>
+          ${dtb("sb-delete", icons.trash, "Delete the selected item (Delete)")}
+          <span class="spacer"></span>
+          <span class="hint">Drag items from the right. Double-click an item to link it to a PLC point. Press F3 to run the screen.</span>
+        </div>
+        <div class="canvas scada-canvas" id="scada-canvas"></div>
+      </main>
+      <aside class="pane pane-right" aria-label="Screen items">
+        <div class="pane-head"><span>Screen items</span></div>
+        <div class="pane-body">
+          <section class="pane-section">
+            <h4>Operator items</h4>
+            <div id="scada-palette" class="palette"></div>
+          </section>
+          <section class="pane-section">
+            <p class="pane-note">Buttons and switches work on I1 to I4 (the board switches) or on markers M. Sliders set analog markers AM. Lamps, displays and plant symbols show any point.</p>
+          </section>
+        </div>
+      </aside>
+    </div>
     <footer class="statusbar">
       <span id="status-text">Ready</span>
       <span class="spacer"></span>
@@ -260,6 +295,10 @@ function setTab(tab: Tab): void {
   state.tab = tab;
   $("#bench-program").hidden = tab !== "program";
   $("#bench-panel").hidden = tab !== "panel";
+  $("#bench-scada").hidden = tab !== "scada";
+  $("#tab-scada").classList.toggle("active", tab === "scada");
+  $("#tab-scada").setAttribute("aria-selected", String(tab === "scada"));
+  $("#tb-check-scada").hidden = tab !== "scada";
   $("#tab-program").classList.toggle("active", tab === "program");
   $("#tab-panel").classList.toggle("active", tab === "panel");
   $("#tab-program").setAttribute("aria-selected", String(tab === "program"));
@@ -272,6 +311,10 @@ function setTab(tab: Tab): void {
   if (tab === "panel" && !panelShown) {
     panelShown = true;
     panelEditor?.fit();
+  }
+  if (tab === "scada" && !scadaShown) {
+    scadaShown = true;
+    scadaEditor.fit();
   }
 }
 
@@ -299,6 +342,30 @@ let strip: SimStrip;
 const EXAMPLES = import.meta.glob("/examples/instructions/*.vsaplc", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
 
 const exampleText = (id: string): string | undefined => EXAMPLES[`/examples/instructions/${id}.vsaplc`];
+
+/** SCADA examples: a program, its wiring and an operator screen. */
+const SCADA_EXAMPLES: Array<[string, string]> = [
+  ["motor-start-stop", "Motor start/stop from the screen"],
+  ["tank-level", "Tank level"],
+  ["temperature-control", "Temperature control"],
+];
+const SCADA_FILES = import.meta.glob("/examples/scada/*.vsaplc", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+
+async function openScadaExample(id: string, title: string): Promise<void> {
+  const raw = SCADA_FILES[`/examples/scada/${id}.vsaplc`];
+  if (!raw) return;
+  if (!(await confirmDiscard())) return;
+  await stopSim();
+  try {
+    const project = JSON.parse(raw) as Project;
+    load({ path: null, name: `Example - ${title}`, project });
+    setTab("scada");
+    setStatus(`Example: ${title}. Press F3 to run the screen.`);
+    await ask(`Example: ${title}`, project.comment, [{ id: "ok", label: "OK", primary: true }]);
+  } catch (e) {
+    showError(errorText(e));
+  }
+}
 
 /** Opens the example of an instruction as a new, unsaved project. */
 async function openExample(item: PaletteItem): Promise<void> {
@@ -385,6 +452,7 @@ async function showClockDialog(): Promise<void> {
 function onFrame(f: SimFrame): void {
   if (!state.running) return;
   panelEditor?.setSim(f);
+  scadaEditor.setSim(f);
   editor.setLive(f.blocks);
   strip.update(f);
   const kinds = new Map((panelEditor?.data.devices ?? []).map((d) => [d.id, d.kind]));
@@ -423,7 +491,8 @@ async function startSim(): Promise<void> {
     return;
   }
   strip.start(editor.diagram, (n) => readMode(panelEditor?.fixedProps(`swI${n}`)));
-  if (state.tab !== "program") setTab("panel");
+  if (state.tab === "program" || state.tab === "scada") setTab(state.tab);
+  else setTab("panel");
   showSimButton();
   setStatus("RUN: the program is running. Use the switches on the Control Panel or the buttons under the diagram.");
 }
@@ -438,6 +507,7 @@ async function stopSim(reason?: string): Promise<void> {
     showError(errorText(e));
   }
   panelEditor?.setSim(null);
+  scadaEditor.setSim(null);
   editor.setLive(null);
   strip.hide();
   showSimButton();
@@ -455,6 +525,9 @@ function load(opened: OpenedProject | { path: null; name: string; project: Proje
   opened.project.panel ??= { devices: [], wires: [], fixedProps: {} };
   editor.setDiagram(opened.project.fbd);
   panelEditor?.setPanel(opened.project.panel);
+  opened.project.scada ??= { items: [] };
+  scadaEditor.setScada(opened.project.scada);
+  if (scadaShown) scadaEditor.fit();
   if (panelEditor && panelShown) panelEditor.fit();
   renderTitle();
 }
@@ -589,6 +662,75 @@ async function checkWiring(): Promise<void> {
   } catch (e) {
     showError(errorText(e));
   }
+}
+
+// ---------- SCADA screen ----------
+
+async function checkScreen(): Promise<void> {
+  try {
+    const errors = await checkScada(scadaEditor.data);
+    scadaEditor.setErrors(errors);
+    await report("Check screen", "No mistakes found on the SCADA screen.", errors.map((e) => e.message));
+  } catch (e) {
+    showError(errorText(e));
+  }
+}
+
+async function editScadaById(id: number): Promise<void> {
+  const it = scadaEditor.itemById(id);
+  if (!it || state.running) return;
+  const r = await editScadaItem(it);
+  if (r) scadaEditor.applyEdit(id, r.label, r.tag, r.props);
+}
+
+/** A SCADA button or switch writes a point: I1 to I4 through the board switch, M directly. */
+function scadaWrite(tag: string, down: boolean): void {
+  const m = /^(I|M)(\d+)$/.exec(tag);
+  if (!m) return;
+  const n = Number(m[2]);
+  const fail = (e: unknown): void => showError(errorText(e));
+  if (m[1] === "I") simPress(`swI${n}`, down).catch(fail);
+  else simMarker(n, down).catch(fail);
+}
+
+function buildScadaPalette(host: HTMLElement): void {
+  host.innerHTML = Object.entries(KINDS)
+    .map(([kind, k]) => `<div class="dev-item" data-kind="${kind}" title="${k.hint}. Drag onto the screen, or double-click.">${scadaThumb(kind)}<span>${k.name}</span></div>`)
+    .join("");
+  host.addEventListener("dblclick", (e) => {
+    const kind = (e.target as Element).closest<HTMLElement>(".dev-item")?.dataset.kind;
+    if (kind && !state.running) scadaEditor.addAtFreeSpot(kind);
+  });
+  host.addEventListener("pointerdown", (e) => {
+    const el = (e.target as Element).closest<HTMLElement>(".dev-item");
+    const kind = el?.dataset.kind;
+    if (!el || !kind || e.button !== 0 || state.running) return;
+    const sx = e.clientX;
+    const sy = e.clientY;
+    let ghost: HTMLElement | null = null;
+    const move = (ev: PointerEvent): void => {
+      if (!ghost && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 6) {
+        ghost = document.createElement("div");
+        ghost.className = "drag-ghost";
+        ghost.innerHTML = el.innerHTML;
+        document.body.appendChild(ghost);
+      }
+      if (ghost) {
+        ghost.style.left = `${ev.clientX + 12}px`;
+        ghost.style.top = `${ev.clientY + 8}px`;
+      }
+    };
+    const end = (ev: PointerEvent): void => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", end);
+      if (ghost) {
+        ghost.remove();
+        if (!scadaEditor.dropAt(kind, ev.clientX, ev.clientY)) setStatus("Drop the item on the screen.", true);
+      }
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", end);
+  });
 }
 
 async function editPanelTarget(t: { fixed: false; id: number } | { fixed: true; id: string }): Promise<void> {
@@ -729,7 +871,13 @@ function menus(): MenuDef[] {
                 submenu: () =>
                   g.items.filter((i) => exampleText(i.id)).map((i): MenuItem => ({ label: i.name, action: () => void openExample(i) })),
               }),
-            ),
+            ).concat([
+              "-",
+              {
+                label: "SCADA screens",
+                submenu: () => SCADA_EXAMPLES.map(([id, title]): MenuItem => ({ label: title, action: () => void openScadaExample(id, title) })),
+              },
+            ]),
         },
         "-",
         { label: "Save", shortcut: "Ctrl+S", action: () => void save(false) },
@@ -782,7 +930,11 @@ function menus(): MenuDef[] {
     {
       label: "Insert",
       items: () =>
-        state.tab === "panel" && panelEditor
+        state.tab === "scada"
+          ? Object.entries(KINDS).map(
+              ([kind, k]): MenuItem => ({ label: k.name, enabled: () => !state.running, action: () => scadaEditor.addAtFreeSpot(kind) }),
+            )
+          : state.tab === "panel" && panelEditor
           ? panelCatalog().map(
               (c): MenuItem => ({
                 label: c.name,
@@ -854,6 +1006,13 @@ function wire(): void {
   $("#tb-sim").addEventListener("click", () => void toggleSim());
   $("#tab-program").addEventListener("click", () => setTab("program"));
   $("#tab-panel").addEventListener("click", () => setTab("panel"));
+  $("#tab-scada").addEventListener("click", () => setTab("scada"));
+  $("#tb-check-scada").addEventListener("click", () => void checkScreen());
+  $("#sb-zoom-in").addEventListener("click", () => scadaEditor.zoomBy(1.25));
+  $("#sb-zoom-out").addEventListener("click", () => scadaEditor.zoomBy(0.8));
+  $("#sb-zoom-100").addEventListener("click", () => scadaEditor.setZoom(1));
+  $("#sb-fit").addEventListener("click", () => scadaEditor.fit());
+  $("#sb-delete").addEventListener("click", () => scadaEditor.deleteSelection());
   for (const p of ["db", "pb"]) {
     $(`#${p}-zoom-in`).addEventListener("click", () => active().zoomBy(1.25));
     $(`#${p}-zoom-out`).addEventListener("click", () => active().zoomBy(0.8));
@@ -1014,6 +1173,28 @@ async function main(): Promise<void> {
       },
     ]);
   });
+  scadaEditor = new ScadaEditor($("#scada-canvas"), {
+    changed: () => {
+      markDirty();
+    },
+    status: setStatus,
+    history: (u, r) => setHistory("scada", u, r),
+    zoom: (percent) => setZoomText("scada", percent),
+    edit: (id) => void editScadaById(id),
+    press: (tag, down) => scadaWrite(tag, down),
+    toggle: (tag, on) => {
+      if (tag.startsWith("I")) {
+        // A board switch: a click changes it over (in Switch mode).
+        scadaWrite(tag, true);
+        scadaWrite(tag, false);
+      } else scadaWrite(tag, on);
+    },
+    analog: (tag, value) => {
+      const m = /^AM(\d+)$/.exec(tag);
+      if (m) simAnalogMarker(Number(m[1]), value).catch((e: unknown) => showError(errorText(e)));
+    },
+  });
+  buildScadaPalette($("#scada-palette"));
   strip = new SimStrip($("#sim-bar"), {
     press: (target, down) => void simPress(target, down).catch((e: unknown) => showError(errorText(e))),
     pause: (paused) => {
@@ -1056,6 +1237,7 @@ async function main(): Promise<void> {
           ladder: { networks: [], scanMs: 10, symbols: {} },
           fbd: { blocks: [], wires: [], scanMs: 10 },
           panel: { devices: [], wires: [], fixedProps: {} },
+          scada: { items: [] },
         },
       });
     }

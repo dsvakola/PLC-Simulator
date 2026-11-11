@@ -6,5 +6,6 @@ pub mod fbd;
 pub mod panel;
 pub mod plc;
 pub mod project;
+pub mod scada;
 pub mod sim;
 pub mod storage;

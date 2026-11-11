@@ -64,6 +64,17 @@
   <li>A short circuit switches the 24 V supply off, like a real fuse. Stop, correct the wiring and run again.</li>
 </ul>
 <p>Press <strong>Stop</strong> (or <kbd>F3</kbd> again) to go back to STOP. Nothing can be changed while the simulation runs.</p>
+<h2>The SCADA Screen</h2>
+<p>The SCADA Screen tab is an operator screen, like the touch panel of a real machine. Drag items from the right onto the screen and double-click each one to link it to a point of the PLC:</p>
+<ul>
+  <li><strong>Push button</strong> and <strong>Switch</strong>: work on I1 to I4 (the board switches) or on a marker M. A marker that is not written by the program keeps what the screen writes, so the program can use it as an input.</li>
+  <li><strong>Slider</strong>: sets an analog marker AM.</li>
+  <li><strong>Lamp</strong>, <strong>Motor</strong>, <strong>Valve</strong>, <strong>Conveyor</strong>: show an on/off point (I, Q or M).</li>
+  <li><strong>Number display</strong>, <strong>Bar graph</strong>, <strong>Tank</strong>: show an analog point (AI1, AI2 or AM). "Show the value times" scales it, for example 0.01 shows AI1 in volts and 0.1 shows a PT100 in °C.</li>
+  <li><strong>Text</strong>: a title or a note.</li>
+</ul>
+<p><strong>Check screen</strong> finds items that are not linked, or linked to a point they cannot use. Press <kbd>F3</kbd> to run the screen with the program. <strong>File &gt; Examples &gt; SCADA screens</strong> has ready examples.</p>
+
 <h2>Examples</h2>
 <p>Every instruction in the list on the left has a ready example with its wiring on the Control Panel: <strong>File &gt; Examples</strong>, or right-click an instruction and choose <strong>Open the example</strong>. Each example opens as a new project; press <kbd>F3</kbd> to try it.</p>
 

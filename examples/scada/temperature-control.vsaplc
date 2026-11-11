@@ -1,0 +1,304 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "SCADA: an oven heater controlled from the screen. The slider sets the wanted temperature (AM2, in tenths of a degree: 600 = 60.0 °C). The PT100 on I8 measures it (AI2). The comparator switches the heater on Q1 on when the oven is at least 0.5 °C below the setting and off when it reaches it. Change the PT100 temperature on the Control Panel to see the heater react.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "analogFlag",
+        "n": 2,
+        "x": 100,
+        "y": 100,
+        "label": "Setting (screen)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "analogInput",
+        "n": 2,
+        "x": 100,
+        "y": 260,
+        "label": "Oven (PT100, I8)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "analogComparator",
+        "gain": 1,
+        "offset": 0,
+        "on": 5,
+        "off": 0,
+        "x": 340,
+        "y": 160,
+        "label": "Below the setting",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "output",
+        "n": 1,
+        "x": 640,
+        "y": 180,
+        "label": "Heater",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 1,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "pt100",
+        "x": 860,
+        "y": 830,
+        "label": "Oven sensor",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "lamp",
+        "x": 440,
+        "y": 830,
+        "label": "Heater",
+        "props": {
+          "color": "amber"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.w",
+        "to": "icon.I8s",
+        "color": "white",
+        "points": [
+          {
+            "x": 1016.8,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 180
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.r1",
+        "to": "icon.I8n",
+        "color": "red",
+        "points": [
+          {
+            "x": 885.2,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 130
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.r2",
+        "to": "icon.I7n",
+        "color": "red",
+        "points": [
+          {
+            "x": 951,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 310
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 482,
+            "y": 1113
+          },
+          {
+            "x": 90,
+            "y": 1113
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1122
+          },
+          {
+            "x": 135,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  },
+  "scada": {
+    "items": [
+      {
+        "id": 1,
+        "kind": "text",
+        "x": 40,
+        "y": 30,
+        "w": 600,
+        "h": 40,
+        "label": "Oven temperature",
+        "tag": "",
+        "props": {
+          "size": "30"
+        }
+      },
+      {
+        "id": 2,
+        "kind": "slider",
+        "x": 80,
+        "y": 120,
+        "w": 300,
+        "h": 80,
+        "label": "Wanted temperature",
+        "tag": "AM2",
+        "props": {
+          "min": "0",
+          "max": "1000",
+          "scale": "0.1",
+          "decimals": "1",
+          "unit": "°C"
+        }
+      },
+      {
+        "id": 3,
+        "kind": "number",
+        "x": 440,
+        "y": 120,
+        "w": 200,
+        "h": 74,
+        "label": "Wanted",
+        "tag": "AM2",
+        "props": {
+          "scale": "0.1",
+          "decimals": "1",
+          "unit": "°C"
+        }
+      },
+      {
+        "id": 4,
+        "kind": "number",
+        "x": 440,
+        "y": 240,
+        "w": 200,
+        "h": 74,
+        "label": "Oven",
+        "tag": "AI2",
+        "props": {
+          "scale": "0.1",
+          "decimals": "1",
+          "unit": "°C"
+        }
+      },
+      {
+        "id": 5,
+        "kind": "bar",
+        "x": 700,
+        "y": 110,
+        "w": 80,
+        "h": 220,
+        "label": "Oven",
+        "tag": "AI2",
+        "props": {
+          "min": "0",
+          "max": "1000",
+          "scale": "0.1",
+          "decimals": "0",
+          "unit": "°C"
+        }
+      },
+      {
+        "id": 6,
+        "kind": "lamp",
+        "x": 120,
+        "y": 260,
+        "w": 80,
+        "h": 90,
+        "label": "Heater",
+        "tag": "Q1",
+        "props": {
+          "color": "amber"
+        }
+      }
+    ]
+  }
+}
