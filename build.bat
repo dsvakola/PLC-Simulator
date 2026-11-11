@@ -1,10 +1,10 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title PLC Simulator - Build
+title PLC ^& SCADA Simulator - Build
 
 echo.
-echo  PLC Simulator - building the release
+echo  PLC ^& SCADA Simulator - building the release
 echo  ------------------------------------
 
 where cargo >nul 2>nul
@@ -48,17 +48,17 @@ if errorlevel 1 goto :fail
 
 if not exist Release mkdir Release
 rem The portable program is a folder: the EXE with its licence and notice files.
-set "PORTABLE=Release\PLC Simulator %VERSION% Portable"
+set "PORTABLE=Release\PLC & SCADA Simulator %VERSION% Portable"
 if not exist "%PORTABLE%" mkdir "%PORTABLE%"
-copy /y "target\release\plc-simulator.exe" "%PORTABLE%\PLC Simulator.exe" >nul
+copy /y "target\release\plc-simulator.exe" "%PORTABLE%\PLC & SCADA Simulator.exe" >nul
 if errorlevel 1 goto :fail
-for %%f in (LICENSE NOTICE THIRD-PARTY-NOTICES.txt PRIVACY.md) do (
+for %%f in (LICENSE NOTICE THIRD-PARTY-NOTICES.txt privacy-policy.md) do (
   copy /y "%%f" "%PORTABLE%\" >nul
   if errorlevel 1 goto :fail
 )
 rem Copy only this version's installer. Older installers stay behind in the
 rem build folder, so ones deleted from Release do not come back.
-copy /y "target\release\bundle\nsis\PLC Simulator_%VERSION%_x64-setup.exe" "Release\" >nul
+copy /y "target\release\bundle\nsis\PLC & SCADA Simulator_%VERSION%_x64-setup.exe" "Release\" >nul
 if errorlevel 1 goto :fail
 
 echo.

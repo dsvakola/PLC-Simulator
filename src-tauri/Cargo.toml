@@ -1,9 +1,9 @@
 [package]
 name = "plc-simulator"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "GPL-3.0-only"
-description = "PLC Simulator - learn PLC programming in ladder logic on a simulated CPU"
+description = "PLC & SCADA Simulator - learn PLC programming and SCADA screens on a simulated PLC"
 authors = ["Prof. Dattaraj S. Vidyasagar", "Prof. Yash D. Vidyasagar"]
 
 [lib]

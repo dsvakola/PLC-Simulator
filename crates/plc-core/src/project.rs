@@ -73,11 +73,11 @@ impl Default for Project {
 /// Checks that an opened project makes sense before it is used.
 pub fn validate(p: &Project) -> Result<(), String> {
     if p.format == 0 {
-        return Err("This file is not a PLC Simulator project, or it is damaged.".into());
+        return Err("This file is not a PLC & SCADA Simulator project, or it is damaged.".into());
     }
     if p.format > FORMAT {
         return Err(
-            "This project was saved by a newer version of PLC Simulator. Please update the program to open it."
+            "This project was saved by a newer version of PLC & SCADA Simulator. Please update the program to open it."
                 .into(),
         );
     }

@@ -39,6 +39,7 @@ function build(info: AppInfo, onError: (msg: string) => void): HTMLDialogElement
         <button class="link-btn" data-link="email">${icons.mail}<span>${escape(info.email)}</span></button>
         <button class="link-btn" data-link="source">${icons.globe}<span>github.com/dsvakola/PLC-Simulator</span></button>
         <button class="link-btn" data-link="software">${icons.globe}<span>More software: github.com/dsvakola/software</span></button>
+        <button class="link-btn" data-link="privacy">${icons.globe}<span>Privacy policy</span></button>
       </div>
       <p class="muted small">Free software, released under the ${escape(info.licence)}. You may use, share and change it under that licence.</p>
     </div>`;
@@ -49,7 +50,7 @@ function build(info: AppInfo, onError: (msg: string) => void): HTMLDialogElement
   for (const b of d.querySelectorAll<HTMLButtonElement>(".link-btn")) {
     b.addEventListener("click", () => {
       const l = b.dataset.link;
-      openLink(l === "email" || l === "source" || l === "software" ? l : "website").catch((e: unknown) => onError(errorText(e)));
+      openLink(l === "email" || l === "source" || l === "software" || l === "privacy" ? l : "website").catch((e: unknown) => onError(errorText(e)));
     });
   }
   document.body.appendChild(d);

@@ -1,7 +1,7 @@
-Third-party notices for PLC Simulator
+Third-party notices for PLC & SCADA Simulator
 =====================================
 
-PLC Simulator is built with Tauri and a set of Rust libraries. Each of them
+PLC & SCADA Simulator is built with Tauri and a set of Rust libraries. Each of them
 is offered under the MIT licence, the Apache License 2.0, or both (the user
 may choose). The full list of libraries, with their versions, is in the
 Cargo.lock file of the source code.

@@ -145,7 +145,7 @@ const zoomButtons = (p: string): string =>
 function shell(): void {
   $("#app").innerHTML = `
     <header class="appbar">
-      <div class="brand"><img src="${appIconUrl}" width="22" height="22" alt="" /><span>PLC Simulator</span></div>
+      <div class="brand" title="PLC & SCADA Simulator"><img src="${appIconUrl}" width="26" height="26" alt="" /><span class="brand-name"><b>PLC &amp; SCADA</b><small>Simulator</small></span></div>
       <nav class="menubar" id="menubar" aria-label="Main menu"></nav>
       <div class="appbar-project" id="appbar-project" title="Project name"></div>
     </header>
@@ -267,7 +267,7 @@ function shell(): void {
 function renderTitle(): void {
   const mark = state.dirty ? " *" : "";
   $("#appbar-project").textContent = `${state.name}${mark}`;
-  document.title = `${state.name}${mark} - PLC Simulator`;
+  document.title = `${state.name}${mark} - PLC & SCADA Simulator`;
   appWindow.setTitle(document.title).catch(() => undefined);
   $("#diagram-lang").textContent = (state.project?.language ?? "fbd").toUpperCase();
 }
@@ -692,7 +692,7 @@ function showRemoteInfo(): void {
   if (!r) return;
   void ask(
     "SCADA connection from another PC",
-    `On the other PC (on the same network), open its web browser and go to:\n\n${r.address}\n\nType this code there:  ${r.code}\n\nThe other PC then shows this SCADA screen live and can use its buttons, switches and sliders while the simulation runs. If Windows asks, allow PLC Simulator on private networks.\n\nSwitch the connection off again in the Simulation menu.`,
+    `On the other PC (on the same network), open its web browser and go to:\n\n${r.address}\n\nType this code there:  ${r.code}\n\nThe other PC then shows this SCADA screen live and can use its buttons, switches and sliders while the simulation runs. If Windows asks, allow PLC & SCADA Simulator on private networks.\n\nSwitch the connection off again in the Simulation menu.`,
     [{ id: "ok", label: "OK", primary: true }],
   );
 }
@@ -1005,7 +1005,7 @@ function menus(): MenuDef[] {
         { label: "User Guide", shortcut: "F1", action: () => showHelp(showError) },
         { label: "Keyboard shortcuts", action: showShortcuts },
         "-",
-        { label: "About PLC Simulator", action: () => void showAbout(showError) },
+        { label: "About PLC & SCADA Simulator", action: () => void showAbout(showError) },
       ],
     },
   ];

@@ -1,9 +1,9 @@
 [package]
 name = "plc-core"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "GPL-3.0-only"
-description = "PLC engine (ladder logic) and project files for PLC Simulator"
+description = "PLC engine, control panel, SCADA screen and project files for PLC & SCADA Simulator"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

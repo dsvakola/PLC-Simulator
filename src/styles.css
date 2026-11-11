@@ -1,4 +1,4 @@
-/* PLC Simulator: an industrial control-room look. Dark charcoal and steel
+/* PLC & SCADA Simulator: an industrial control-room look. Dark charcoal and steel
    blue by default, with amber for live power flow and the usual PLC light
    colours (green RUN, amber STOP, red ERROR). A light theme suits classroom
    projectors. Everything is drawn with CSS and SVG, so it is sharp at any
@@ -1632,4 +1632,23 @@ dialog.nudge {
   to {
     transform: translateX(30px);
   }
+}
+
+/* The program's name in the top bar on two short lines. */
+.brand-name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-name b {
+  font-size: 13px;
+}
+
+.brand-name small {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
 }

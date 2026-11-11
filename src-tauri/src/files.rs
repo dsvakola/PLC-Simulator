@@ -10,9 +10,9 @@ use std::path::PathBuf;
 use tauri::AppHandle;
 use tauri_plugin_dialog::DialogExt;
 
-/// File extension of a PLC Simulator project.
+/// File extension of a PLC & SCADA Simulator project.
 const EXT: &str = "vsaplc";
-const FILTER: &str = "PLC Simulator project";
+const FILTER: &str = "PLC & SCADA Simulator project";
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]

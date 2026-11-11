@@ -1,4 +1,4 @@
-//! PLC engine for PLC Simulator: the ladder logic CPU, the function block
+//! PLC engine for PLC & SCADA Simulator: the ladder logic CPU, the function block
 //! diagram (FBD) CPU, the control panel and its simulation, the project file
 //! and safe saving.
 

@@ -1,10 +1,10 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title PLC Simulator - MSIX package
+title PLC ^& SCADA Simulator - MSIX package
 
 echo.
-echo  PLC Simulator - making the MSIX package for the Microsoft Store
+echo  PLC ^& SCADA Simulator - making the MSIX package for the Microsoft Store
 echo  ----------------------------------------------------------------
 echo  Run build.bat first: this packs the program it built.
 
@@ -37,7 +37,7 @@ set "LAYOUT=target\msix\layout"
 if exist "target\msix" rmdir /s /q "target\msix"
 mkdir "%LAYOUT%\Assets"
 copy /y "target\release\plc-simulator.exe" "%LAYOUT%\" >nul || goto :fail
-for %%f in (LICENSE NOTICE THIRD-PARTY-NOTICES.txt PRIVACY.md) do copy /y "%%f" "%LAYOUT%\" >nul || goto :fail
+for %%f in (LICENSE NOTICE THIRD-PARTY-NOTICES.txt privacy-policy.md) do copy /y "%%f" "%LAYOUT%\" >nul || goto :fail
 copy /y "msix\Assets\*.png" "%LAYOUT%\Assets\" >nul || goto :fail
 powershell -NoProfile -Command "(Get-Content -Raw 'msix\AppxManifest.xml').Replace('@VERSION@','%MSIXVER%') | Set-Content -NoNewline -Encoding UTF8 '%LAYOUT%\AppxManifest.xml'" || goto :fail
 
@@ -48,7 +48,7 @@ powershell -NoProfile -Command "$x=[xml](Get-Content -Raw 'target\msix\priconfig
 "%SDK%\makepri.exe" new /pr "%LAYOUT%" /cf "target\msix\priconfig.xml" /mn "%LAYOUT%\AppxManifest.xml" /of "%LAYOUT%\resources.pri" /o >nul || goto :fail
 
 if not exist Release mkdir Release
-set "OUT=Release\PLC-Simulator-%MSIXVER%.msix"
+set "OUT=Release\PLC-SCADA-Simulator-%MSIXVER%.msix"
 "%SDK%\makeappx.exe" pack /o /h SHA256 /d "%LAYOUT%" /p "%OUT%" >nul || goto :fail
 
 echo  Done. Upload this file in Partner Center ^(Packages^):

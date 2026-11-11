@@ -1,4 +1,4 @@
-# PLC Simulator
+# PLC & SCADA Simulator
 
 An offline Windows program for learning PLC programming, for students,
 teachers and hobbyists. Draw a program as a function block diagram (FBD),

@@ -48,8 +48,9 @@ pub fn save_project(path: &Path, p: &Project) -> Result<(), String> {
 pub fn open_project(path: &Path) -> Result<Project, String> {
     let text =
         fs::read_to_string(path).map_err(|e| format!("Could not open {}: {e}", path.display()))?;
-    let p: Project = serde_json::from_str(&text)
-        .map_err(|_| "This file is not a PLC Simulator project, or it is damaged.".to_string())?;
+    let p: Project = serde_json::from_str(&text).map_err(|_| {
+        "This file is not a PLC & SCADA Simulator project, or it is damaged.".to_string()
+    })?;
     project::validate(&p)?;
     Ok(project::upgrade(p))
 }
@@ -116,7 +117,7 @@ mod tests {
         let f = d.0.join("notes.vsaplc");
         fs::write(&f, "hello").expect("write");
         let e = open_project(&f).expect_err("should fail");
-        assert!(e.contains("not a PLC Simulator project"));
+        assert!(e.contains("not a PLC & SCADA Simulator project"));
         let missing = open_project(&d.0.join("missing.vsaplc")).expect_err("missing");
         assert!(missing.starts_with("Could not open"));
     }

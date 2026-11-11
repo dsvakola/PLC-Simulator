@@ -1,8 +1,8 @@
-# PLC Simulator - project brief
+# PLC & SCADA Simulator - project brief
 
 Owner: Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar, Vidyasagar Academy.
 
-Goal: an offline Windows desktop simulator for PLC programming for students, teachers and hobbyists, similar in spirit to Siemens-style PLCs (LOGO!, S7-200/1200/1500 style CPUs, all types) but NOT using Siemens trademarks, logos, file formats or software, and not copying any Siemens files (name suggestion: VSA PLC Simulator; identifier in.edu.vsa.plcsimulator; own look and feel, own menus, different from the VSA Simulator circuit app).
+Goal: an offline Windows desktop simulator for PLC programming for students, teachers and hobbyists, similar in spirit to Siemens-style PLCs (LOGO!, S7-200/1200/1500 style CPUs, all types) but NOT using Siemens trademarks, logos, file formats or software, and not copying any Siemens files (name suggestion: VSA PLC & SCADA Simulator; identifier in.edu.vsa.plcsimulator; own look and feel, own menus, different from the VSA Simulator circuit app).
 
 Stack and rules: Tauri v2 + Rust + vanilla TypeScript strict, Vite, pnpm, no Node at runtime; Release folder + build.bat; version starts at 0.0.1 and increases with every change; GPL 3.0; per-monitor DPI sharp graphics (SVG for logos/icons); commit as dsvakola with no co-author lines; no mention of any AI assistant or its maker anywhere in project files; address the Professor as Professor; one step at a time and wait for his go-ahead; never install anything on his PC without his explicit yes.
 

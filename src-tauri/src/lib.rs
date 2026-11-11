@@ -14,6 +14,7 @@ const WEBSITE: &str = "https://vsa.edu.in/software/";
 const EMAIL: &str = "mailto:softinquiry@vsa.edu.in";
 const SOURCE: &str = "https://github.com/dsvakola/PLC-Simulator";
 const SOFTWARE: &str = "https://github.com/dsvakola/software";
+const PRIVACY: &str = "https://github.com/dsvakola/PLC-Simulator/blob/main/privacy-policy.md";
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -51,6 +52,8 @@ enum Link {
     Source,
     /// More software of Vidyasagar Academy on GitHub.
     Software,
+    /// The privacy policy.
+    Privacy,
 }
 
 /// Only the academy website, e-mail and GitHub pages can be opened; the window never
@@ -62,6 +65,7 @@ fn open_link(app: AppHandle, link: Link) -> AppResult<()> {
         Link::Email => EMAIL,
         Link::Source => SOURCE,
         Link::Software => SOFTWARE,
+        Link::Privacy => PRIVACY,
     };
     app.opener()
         .open_url(url, None::<&str>)
@@ -132,7 +136,7 @@ pub fn run() {
         ])
         .run(tauri::generate_context!());
     if let Err(e) = result {
-        eprintln!("PLC Simulator could not start: {e}");
+        eprintln!("PLC & SCADA Simulator could not start: {e}");
         std::process::exit(1);
     }
 }
