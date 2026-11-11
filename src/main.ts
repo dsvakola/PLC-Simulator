@@ -145,7 +145,7 @@ function shell(): void {
       ${tb("tb-check", icons.check, "Check program", "Look for mistakes in the diagram")}
       ${tb("tb-check-panel", icons.check, "Check wiring", "Look for mistakes in the wiring of the panel")}
       <span class="tool-sep"></span>
-      ${tb("tb-sim", icons.run, "Simulate", "Run the program on the Control Panel (F5)")}
+      ${tb("tb-sim", icons.run, "Simulate", "Run the program on the Control Panel (F3)")}
     </div>
     <nav class="tabs" role="tablist" aria-label="Parts of the project">
       <button class="tab-btn active" id="tab-program" role="tab" aria-selected="true">${icons.program}<span>Program</span></button>
@@ -286,7 +286,7 @@ function showSimButton(): void {
   const b = $("#tb-sim");
   b.classList.toggle("on", state.running);
   b.innerHTML = state.running ? `${icons.stop}<span>Stop</span>` : `${icons.run}<span>Simulate</span>`;
-  b.title = state.running ? "Stop the simulation (F5)" : "Run the program on the Control Panel (F5)";
+  b.title = state.running ? "Stop the simulation (F3)" : "Run the program on the Control Panel (F3)";
   $("#panel-hint").textContent = state.running ? RUN_HINT : EDIT_HINT;
   document.body.classList.toggle("simulating", state.running);
 }
@@ -649,7 +649,7 @@ function showShortcuts(): void {
     ["Middle mouse button", "Move the view"],
     ["Ctrl + mouse wheel", "Zoom in and out"],
     ["Ctrl+0", "Zoom 100%"],
-    ["F5", "Simulate: run or stop the program on the Control Panel"],
+    ["F3", "Simulate: run or stop the program"],
     ["Ctrl++ / Ctrl+-", "Zoom in, zoom out"],
     ["Double-click a block or device", "Its settings and your own name for it"],
     ["F1", "User Guide"],
@@ -772,14 +772,14 @@ function menus(): MenuDef[] {
         "-",
         { label: "Remove all wires", enabled: () => !state.running && (panelEditor?.wireCount ?? 0) > 0, action: () => panelEditor?.removeAllWires() },
         "-",
-        { label: "Switch to RUN", shortcut: "F5", enabled: () => !state.running, action: () => void startSim() },
-        { label: "Switch to STOP", shortcut: "F5", enabled: () => state.running, action: () => void stopSim() },
+        { label: "Switch to RUN", shortcut: "F3", enabled: () => !state.running, action: () => void startSim() },
+        { label: "Switch to STOP", shortcut: "F3", enabled: () => state.running, action: () => void stopSim() },
       ],
     },
     {
       label: "Simulation",
       items: () => [
-        { label: "Simulate on the Control Panel", shortcut: "F5", checked: () => state.running, action: () => void toggleSim() },
+        { label: "Simulate on the Control Panel", shortcut: "F3", checked: () => state.running, action: () => void toggleSim() },
         "-",
         soon("Allow SCADA connection from another PC"),
       ],
@@ -864,10 +864,11 @@ function wire(): void {
       else active().cancelDrag();
     }
     else if (e.key === "F1") showHelp(showError);
-    else if (e.key === "F5") void toggleSim();
+    // F3 switches the simulation on and off, as in the usual PLC software; Esc stops it.
+    else if (e.key === "F3") void toggleSim();
     else if (e.key === "F11") void toggleFullscreen();
     // Keys the web view would otherwise use to reload, print or search the page.
-    else if ((ctrl && ["r", "p", "f", "g", "u"].includes(key)) || e.key === "F3" || e.key === "F7") handled = true;
+    else if ((ctrl && ["r", "p", "f", "g", "u"].includes(key)) || e.key === "F5" || e.key === "F7") handled = true;
     else handled = false;
     if (handled) e.preventDefault();
   });

@@ -32,7 +32,7 @@
 </ul>
 
 <h2>Testing the program in the Program tab</h2>
-<p>While the simulation runs, wires that are on turn red, and a strip under the diagram shows each input and output the program uses:</p>
+<p>While the simulation runs, every connection shows its signal, as in the usual PLC software: red for 1, blue for 0, pin stubs included, and a block whose output is 1 gets a red frame. A strip under the diagram shows each input and output the program uses:</p>
 <ul>
   <li>An input in Switch mode is a small slide switch: click it to switch it on or off. A push button works while you hold the mouse button down. A frequency input switches by itself. I5 to I8 are set by the devices wired on the Control Panel.</li>
   <li>Each output is a lamp that lights when it is on.</li>
@@ -55,7 +55,7 @@
 <p> <strong>Check wiring</strong> finds short circuits, wires to nowhere and duplicate wires, and gently warns about a motor that is not earthed.</p>
 
 <h2>Simulate</h2>
-<p>Press <strong>Simulate</strong> on the toolbar (or <kbd>F5</kbd>) to put the PLC into RUN. The program then runs scan by scan in real time, with real timers, and follows exactly the wires you drew:</p>
+<p>Press <strong>Simulate</strong> on the toolbar (or <kbd>F3</kbd>) to put the PLC into RUN. The program then runs scan by scan in real time, with real timers, and follows exactly the wires you drew:</p>
 <ul>
   <li>Click the switches and push buttons. A momentary one works while you hold the mouse button; a maintained one changes over with each click.</li>
   <li>Click a sensor to put a target in front of it, and again to take it away.</li>
@@ -63,7 +63,7 @@
   <li>Lamps light, motors turn (backwards if wired the wrong way round), buzzers and hooters sound.</li>
   <li>A short circuit switches the 24 V supply off, like a real fuse. Stop, correct the wiring and run again.</li>
 </ul>
-<p>Press <strong>Stop</strong> (or <kbd>F5</kbd> again) to go back to STOP. Nothing can be changed while the simulation runs.</p>
+<p>Press <strong>Stop</strong> (or <kbd>F3</kbd> again) to go back to STOP. Nothing can be changed while the simulation runs.</p>
 <h2>Projects and files</h2>
 <p>A project is saved as one <code>.vsaplc</code> file. When you save over an older file, the previous version is kept beside it as <code>.vsaplc.bak</code>, so you can always go back one step. Double-click a project file in Windows to open it in PLC Simulator.</p>
 
@@ -71,7 +71,7 @@
 <table>
   <tr><td><kbd>Ctrl+N</kbd> / <kbd>Ctrl+O</kbd> / <kbd>Ctrl+S</kbd></td><td>New, open, save project</td></tr>
   <tr><td><kbd>Ctrl+Shift+S</kbd></td><td>Save as</td></tr>
-  <tr><td><kbd>F5</kbd></td><td>Simulate: RUN or STOP</td></tr>
+  <tr><td><kbd>F3</kbd></td><td>Simulate: RUN or STOP</td></tr>
   <tr><td><kbd>F1</kbd></td><td>This guide</td></tr>
   <tr><td><kbd>F11</kbd></td><td>Full screen, for the classroom projector</td></tr>
 </table>

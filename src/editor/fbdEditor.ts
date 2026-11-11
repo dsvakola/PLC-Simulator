@@ -23,8 +23,9 @@ const FILL = "#FFDF8C";
 const INK = "#111111";
 const BLUE = "#1f6fc4";
 const RED = "#d33a32";
-/** Wires that are on while the simulation runs. */
+/** While simulating, as in the usual PLC software: a signal that is 1 is red, a signal that is 0 is blue. */
 const LIVE = "#e0201b";
+const LIVE_OFF = "#1f4fd6";
 const SEL = "#e0201b";
 const OK_PIN = "#2fa34a";
 const TNR = "'Times New Roman', Times, serif";
@@ -983,22 +984,33 @@ export class FbdEditor {
     return { w, h };
   }
 
-  private blockSvg(b: Block, wiredIns: Set<string>): string {
+  /** Colour of a digital signal while simulating (red 1, blue 0), or plain ink. */
+  private signalColor(v: boolean | number | undefined): string {
+    if (!this.live || typeof v !== "boolean") return INK;
+    return v ? LIVE : LIVE_OFF;
+  }
+
+  private blockSvg(b: Block, wiredIns: Set<string>, inValues: Map<string, boolean | number>): string {
     const g = geometry(b);
     const sym = symbolOf(b);
     const selected = this.selected(b.id);
     const error = this.errors.get(b.id);
     let s = `<g class="blk" data-id="${b.id}" transform="translate(${b.x} ${b.y})">`;
-    // Pin stubs.
-    s += `<g stroke="${INK}" stroke-width="2">`;
-    for (const p of g.ins) s += `<line x1="${p.x}" y1="${p.y}" x2="0" y2="${p.y}"/>`;
-    for (const p of g.outs) s += `<line x1="${g.w}" y1="${p.y}" x2="${p.x}" y2="${p.y}"/>`;
+    // Pin stubs; while simulating they show the signal on them, like the wires.
+    const out = this.live?.get(b.id);
+    s += `<g stroke-width="2">`;
+    g.ins.forEach((p, i) => {
+      const c = wiredIns.has(`${b.id}:${i}`) ? this.signalColor(inValues.get(`${b.id}:${i}`)) : INK;
+      s += `<line x1="${p.x}" y1="${p.y}" x2="0" y2="${p.y}" stroke="${c}"/>`;
+    });
+    for (const p of g.outs) s += `<line x1="${g.w}" y1="${p.y}" x2="${p.x}" y2="${p.y}" stroke="${this.signalColor(out)}"/>`;
     s += `</g>`;
     if (error) {
       s += `<rect x="-7" y="-7" width="${g.w + 14}" height="${g.h + 14}" fill="none" stroke="${RED}" stroke-width="2" stroke-dasharray="6 4"><title>${esc(error)}</title></rect>`;
     }
     // The box: #FFDF8C with a 3 unit #111111 border and square corners.
-    s += `<rect x="0" y="0" width="${g.w}" height="${g.h}" fill="${FILL}" stroke="${INK}" stroke-width="3"/>`;
+    // While simulating, a block whose output is 1 gets a red frame.
+    s += `<rect x="0" y="0" width="${g.w}" height="${g.h}" fill="${FILL}" stroke="${out === true ? LIVE : INK}" stroke-width="3"/>`;
     if (sym.negated) {
       const p = g.outs[0];
       if (p) s += `<circle cx="${g.w + 6}" cy="${p.y}" r="6" fill="#ffffff" stroke="${INK}" stroke-width="2"/>`;
@@ -1072,9 +1084,8 @@ export class FbdEditor {
       const full = fullPath(a, wr.corners ?? [], b, this.around(wr));
       const path = pathData(full);
       const sel = this.sel?.t === "wire" && this.sel.i === i;
-      const on = this.live?.get(wr.fromBlock) === true;
-      const color = sel ? BLUE : on ? LIVE : INK;
-      s += `<g class="wire" data-i="${i}"><path d="${path}" fill="none" stroke="transparent" stroke-width="12" pointer-events="stroke"/><path d="${path}" fill="none" stroke="${color}" stroke-width="${sel || on ? 3 : 2}"/></g>`;
+      const color = sel ? BLUE : this.signalColor(this.live?.get(wr.fromBlock));
+      s += `<g class="wire" data-i="${i}"><path d="${path}" fill="none" stroke="transparent" stroke-width="12" pointer-events="stroke"/><path d="${path}" fill="none" stroke="${color}" stroke-width="${sel ? 3 : 2}"/></g>`;
       if (sel) {
         // Blue dots on the pieces, red squares on the corners, as in the usual PLC software.
         for (let k = 0; k < full.length - 1; k++) {
@@ -1089,7 +1100,14 @@ export class FbdEditor {
         }
       }
     });
-    for (const b of this.d.blocks) s += this.blockSvg(b, wiredIns);
+    const inValues = new Map<string, boolean | number>();
+    if (this.live) {
+      for (const wr of this.d.wires) {
+        const v = this.live.get(wr.fromBlock);
+        if (v !== undefined) inValues.set(`${wr.toBlock}:${wr.toPin}`, v);
+      }
+    }
+    for (const b of this.d.blocks) s += this.blockSvg(b, wiredIns, inValues);
     s += corners;
     const dr = this.drag;
     if (dr?.t === "wire") {
