@@ -339,10 +339,10 @@ export function drawBoard(width: number, height: number): string {
 }
 
 /** The bench around the board, where devices may also be placed. */
-export function drawBench(width: number, height: number): string {
+export function drawBench(x: number, y: number, width: number, height: number): string {
   return (
     `<defs><pattern id="benchGrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#b5bcc6" stroke-width="1"/></pattern></defs>` +
-    `<rect x="0" y="0" width="${width}" height="${height}" fill="#d3d8df"/>` +
-    `<rect x="0" y="0" width="${width}" height="${height}" fill="url(#benchGrid)"/>`
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="#d3d8df"/>` +
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="url(#benchGrid)"/>`
   );
 }

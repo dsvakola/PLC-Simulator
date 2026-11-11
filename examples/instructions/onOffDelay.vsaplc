@@ -1,0 +1,182 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "On/off-delay: switch on I5; the fan motor on Q1 starts after 2 s and, after switching off, runs on for 4 s.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "input",
+        "n": 5,
+        "x": 100,
+        "y": 160,
+        "label": "Fan switch",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "onOffDelay",
+        "onMs": 2000,
+        "offMs": 4000,
+        "x": 340,
+        "y": 140,
+        "label": "2 s on, 4 s off",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "output",
+        "n": 1,
+        "x": 640,
+        "y": 160,
+        "label": "Fan",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "toggle",
+        "x": 860,
+        "y": 830,
+        "label": "Fan switch",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "motor",
+        "x": 440,
+        "y": 830,
+        "label": "Fan",
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.a",
+        "to": "icon.I5p",
+        "color": "red",
+        "points": [
+          {
+            "x": 902,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 620
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.b",
+        "to": "icon.I5s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 958,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 720
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 465.2,
+            "y": 1104
+          },
+          {
+            "x": 90,
+            "y": 1104
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1113
+          },
+          {
+            "x": 135,
+            "y": 1113
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.g",
+        "to": "qcon.Q1g",
+        "color": "earth",
+        "points": [
+          {
+            "x": 610.8,
+            "y": 1122
+          },
+          {
+            "x": 180,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

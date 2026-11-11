@@ -293,6 +293,30 @@ function showSimButton(): void {
 
 let strip: SimStrip;
 
+// ---------- Examples ----------
+
+/** The example projects, one for each instruction, built into the program. */
+const EXAMPLES = import.meta.glob("/examples/instructions/*.vsaplc", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+
+const exampleText = (id: string): string | undefined => EXAMPLES[`/examples/instructions/${id}.vsaplc`];
+
+/** Opens the example of an instruction as a new, unsaved project. */
+async function openExample(item: PaletteItem): Promise<void> {
+  const raw = exampleText(item.id);
+  if (!raw) return;
+  if (!(await confirmDiscard())) return;
+  await stopSim();
+  try {
+    const project = JSON.parse(raw) as Project;
+    load({ path: null, name: `Example - ${item.name}`, project });
+    setStatus(`Example: ${item.name}. Press F3 to simulate; the wiring is on the Control Panel tab.`);
+    await ask(`Example: ${item.name}`, project.comment, [{ id: "ok", label: "OK", primary: true }]);
+  } catch (e) {
+    showError(errorText(e));
+  }
+}
+
+
 /** The date and time the weekly and yearly timers start from. */
 function startClock(): Clock {
   const sc = state.simClock;
@@ -696,6 +720,18 @@ function menus(): MenuDef[] {
           ],
         },
         "-",
+        {
+          label: "Examples",
+          submenu: () =>
+            PALETTE.map(
+              (g): MenuItem => ({
+                label: g.title,
+                submenu: () =>
+                  g.items.filter((i) => exampleText(i.id)).map((i): MenuItem => ({ label: i.name, action: () => void openExample(i) })),
+              }),
+            ),
+        },
+        "-",
         { label: "Save", shortcut: "Ctrl+S", action: () => void save(false) },
         { label: "Save as…", shortcut: "Ctrl+Shift+S", action: () => void save(true) },
         "-",
@@ -957,7 +993,10 @@ async function main(): Promise<void> {
     const item = el?.dataset.id ? findPaletteItem(el.dataset.id) : undefined;
     if (!item) return;
     e.preventDefault();
-    showContextMenu(e.clientX, e.clientY, [{ label: `Add ${item.name} to the diagram`, enabled: !state.running, action: () => addItem(item) }]);
+    showContextMenu(e.clientX, e.clientY, [
+      { label: `Add ${item.name} to the diagram`, enabled: !state.running, action: () => addItem(item) },
+      { label: "Open the example", enabled: exampleText(item.id) !== undefined, action: () => void openExample(item) },
+    ]);
   });
   $("#device-palette").addEventListener("contextmenu", (e) => {
     const kind = (e.target as Element).closest<HTMLElement>(".dev-item")?.dataset.kind;

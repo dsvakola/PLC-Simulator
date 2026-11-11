@@ -1013,13 +1013,15 @@ export class PanelEditor {
 
   private render(): void {
     const z = this.zoom;
-    const w = this.layout.workWidth + PAD_X * 2;
-    const h = this.layout.workHeight + PAD_TOP + PAD_BOTTOM;
+    // The drawing fills at least the visible area, so a wire bent out into
+    // the grey space around the panel is still drawn there.
+    const w = Math.max(this.layout.workWidth + PAD_X * 2, (this.scroller.clientWidth - 1) / z);
+    const h = Math.max(this.layout.workHeight + PAD_TOP + PAD_BOTTOM, (this.scroller.clientHeight - 1) / z);
     this.svg.setAttribute("width", String(Math.floor(w * z)));
     this.svg.setAttribute("height", String(Math.floor(h * z)));
     this.svg.setAttribute("viewBox", `${-PAD_X} ${-PAD_TOP} ${w} ${h}`);
     this.svg.classList.toggle("simulating", this.sim !== null);
-    let s = drawBench(this.layout.workWidth, this.layout.workHeight) + drawBoard(this.layout.width, this.layout.height);
+    let s = drawBench(-PAD_X, -PAD_TOP, w, h) + drawBoard(this.layout.width, this.layout.height);
     const states = new Map((this.sim?.devices ?? []).map((d) => [d.id, d]));
 
     // The board's own devices.

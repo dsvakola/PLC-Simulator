@@ -1,0 +1,202 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Analog threshold: a PT100 on I8 (AI2, tenths of a degree). The cooling fan on Q1 starts at 35.0 °C and stops below 32.0 °C.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "analogInput",
+        "n": 2,
+        "x": 100,
+        "y": 160,
+        "label": "PT100 on I8",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "analogThreshold",
+        "on": 350,
+        "off": 320,
+        "x": 340,
+        "y": 140,
+        "label": "35 °C on, 32 °C off",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "output",
+        "n": 1,
+        "x": 640,
+        "y": 160,
+        "label": "Cooling fan",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "pt100",
+        "x": 860,
+        "y": 830,
+        "label": "Temperature",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "motor",
+        "x": 440,
+        "y": 830,
+        "label": "Cooling fan",
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.w",
+        "to": "icon.I8s",
+        "color": "white",
+        "points": [
+          {
+            "x": 1016.8,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 180
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.r1",
+        "to": "icon.I8n",
+        "color": "red",
+        "points": [
+          {
+            "x": 885.2,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 130
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.r2",
+        "to": "icon.I7n",
+        "color": "red",
+        "points": [
+          {
+            "x": 951,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 310
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 465.2,
+            "y": 1113
+          },
+          {
+            "x": 90,
+            "y": 1113
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1122
+          },
+          {
+            "x": 135,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.g",
+        "to": "qcon.Q1g",
+        "color": "earth",
+        "points": [
+          {
+            "x": 610.8,
+            "y": 1131
+          },
+          {
+            "x": 180,
+            "y": 1131
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

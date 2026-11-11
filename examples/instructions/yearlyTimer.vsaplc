@@ -1,0 +1,120 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Yearly timer: the garden pump on Q1 may run from 1 April to 1 October every year.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "yearlyTimer",
+        "cams": [
+          {
+            "onMonth": 4,
+            "onDay": 1,
+            "offMonth": 10,
+            "offDay": 1
+          }
+        ],
+        "x": 340,
+        "y": 140,
+        "label": "1 April to 1 October",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "output",
+        "n": 1,
+        "x": 640,
+        "y": 160,
+        "label": "Garden pump",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "motor",
+        "x": 440,
+        "y": 830,
+        "label": "Garden pump",
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 465.2,
+            "y": 1086
+          },
+          {
+            "x": 90,
+            "y": 1086
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1095
+          },
+          {
+            "x": 135,
+            "y": 1095
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.g",
+        "to": "qcon.Q1g",
+        "color": "earth",
+        "points": [
+          {
+            "x": 610.8,
+            "y": 1104
+          },
+          {
+            "x": 180,
+            "y": 1104
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

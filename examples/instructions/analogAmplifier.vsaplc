@@ -1,0 +1,229 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Analog amplifier: the knob on I7 (0-1000) is scaled to 0-100 % (gain 0.1) and kept in AM1. The threshold lights Q1 at 75 % or more.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "analogInput",
+        "n": 1,
+        "x": 100,
+        "y": 160,
+        "label": "Knob on I7",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "analogAmplifier",
+        "gain": 0.1,
+        "offset": 0,
+        "x": 260,
+        "y": 140,
+        "label": "0-100 %",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "analogFlag",
+        "n": 1,
+        "x": 460,
+        "y": 160,
+        "label": "Percent",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "analogThreshold",
+        "on": 75,
+        "off": 70,
+        "x": 620,
+        "y": 140,
+        "label": "On at 75 %",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 5,
+        "k": "output",
+        "n": 1,
+        "x": 860,
+        "y": 160,
+        "label": "Lamp",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 4,
+        "fromPin": 0,
+        "toBlock": 5,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "pot",
+        "x": 860,
+        "y": 830,
+        "label": "Knob",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "lamp",
+        "x": 440,
+        "y": 830,
+        "label": "Lamp",
+        "props": {
+          "color": "amber"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.p",
+        "to": "icon.I7p",
+        "color": "red",
+        "points": [
+          {
+            "x": 885.2,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 260
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.n",
+        "to": "icon.I7n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 951,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 310
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.out",
+        "to": "icon.I7s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 1016.8,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 360
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 482,
+            "y": 1113
+          },
+          {
+            "x": 90,
+            "y": 1113
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1122
+          },
+          {
+            "x": 135,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

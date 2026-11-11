@@ -1,0 +1,271 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Analog test. Knob (potentiometer) on I7 = AI1: Q1 lamp on at 7 V or more (off below 6 V), Q3 lamp on at 2 V or less; AM1 shows the knob value. PT100 on I8 = AI2: Q2 lamp on at 30.0 °C (off below 28.0 °C).",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "analogInput",
+        "n": 1,
+        "x": 100,
+        "y": 140,
+        "label": "Knob on I7",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "analogThreshold",
+        "on": 700,
+        "off": 600,
+        "x": 320,
+        "y": 120,
+        "label": "On at 7 V, off below 6 V",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "output",
+        "n": 1,
+        "x": 620,
+        "y": 140,
+        "label": "Knob high",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "analogThreshold",
+        "on": 200,
+        "off": 300,
+        "x": 320,
+        "y": 280,
+        "label": "On at 2 V or less",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 5,
+        "k": "output",
+        "n": 3,
+        "x": 620,
+        "y": 300,
+        "label": "Knob low",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 6,
+        "k": "analogAmplifier",
+        "gain": 1,
+        "offset": 0,
+        "x": 320,
+        "y": 440,
+        "label": "Knob value",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 7,
+        "k": "analogFlag",
+        "n": 1,
+        "x": 620,
+        "y": 460,
+        "label": "Knob value",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 8,
+        "k": "analogInput",
+        "n": 2,
+        "x": 100,
+        "y": 640,
+        "label": "PT100 on I8",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 9,
+        "k": "analogThreshold",
+        "on": 300,
+        "off": 280,
+        "x": 320,
+        "y": 620,
+        "label": "On at 30 °C, off below 28 °C",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 10,
+        "k": "output",
+        "n": 2,
+        "x": 620,
+        "y": 640,
+        "label": "Too hot",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 4,
+        "fromPin": 0,
+        "toBlock": 5,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 6,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 6,
+        "fromPin": 0,
+        "toBlock": 7,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 8,
+        "fromPin": 0,
+        "toBlock": 9,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 9,
+        "fromPin": 0,
+        "toBlock": 10,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "pot",
+        "x": 900,
+        "y": 830,
+        "label": "Knob",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "pt100",
+        "x": 1200,
+        "y": 830,
+        "label": "Oven sensor",
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "from": "icon.I7p",
+        "to": "d1.p",
+        "color": "red",
+        "points": [],
+        "curved": false
+      },
+      {
+        "from": "icon.I7n",
+        "to": "d1.n",
+        "color": "blue",
+        "points": [],
+        "curved": false
+      },
+      {
+        "from": "d1.out",
+        "to": "icon.I7s",
+        "color": "yellow",
+        "points": [],
+        "curved": false
+      },
+      {
+        "from": "d2.w",
+        "to": "icon.I8s",
+        "color": "white",
+        "points": [],
+        "curved": false
+      },
+      {
+        "from": "d2.r1",
+        "to": "icon.I8n",
+        "color": "red",
+        "points": [],
+        "curved": false
+      },
+      {
+        "from": "d2.r2",
+        "to": "icon.I8n",
+        "color": "red",
+        "points": [],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

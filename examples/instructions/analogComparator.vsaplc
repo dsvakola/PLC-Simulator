@@ -1,0 +1,278 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Analog comparator: two knobs, on I7 (AI1) and I8 (AI2). The lamp on Q1 lights when knob 1 is at least 1 V (100) above knob 2, and goes out when the difference falls below 0.5 V (50).",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "analogInput",
+        "n": 1,
+        "x": 100,
+        "y": 100,
+        "label": "Knob 1 (I7)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "analogInput",
+        "n": 2,
+        "x": 100,
+        "y": 260,
+        "label": "Knob 2 (I8)",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "analogComparator",
+        "gain": 1,
+        "offset": 0,
+        "on": 100,
+        "off": 50,
+        "x": 340,
+        "y": 160,
+        "label": "1 V more",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "output",
+        "n": 1,
+        "x": 640,
+        "y": 180,
+        "label": "Lamp",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 1,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "pot",
+        "x": 860,
+        "y": 830,
+        "label": "Knob 1",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "pot",
+        "x": 1060,
+        "y": 830,
+        "label": "Knob 2",
+        "props": {}
+      },
+      {
+        "id": 3,
+        "kind": "lamp",
+        "x": 440,
+        "y": 830,
+        "label": "Lamp",
+        "props": {
+          "color": "blue"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.p",
+        "to": "icon.I7p",
+        "color": "red",
+        "points": [
+          {
+            "x": 885.2,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 260
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.n",
+        "to": "icon.I7n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 951,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 310
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.out",
+        "to": "icon.I7s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 1016.8,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 360
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "icon.I8p",
+        "color": "red",
+        "points": [
+          {
+            "x": 1085.2,
+            "y": 1113
+          },
+          {
+            "x": 1556,
+            "y": 1113
+          },
+          {
+            "x": 1556,
+            "y": 80
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "icon.I8n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 1151,
+            "y": 1122
+          },
+          {
+            "x": 1568,
+            "y": 1122
+          },
+          {
+            "x": 1568,
+            "y": 130
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.out",
+        "to": "icon.I8s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 1216.8,
+            "y": 1131
+          },
+          {
+            "x": 1580,
+            "y": 1131
+          },
+          {
+            "x": 1580,
+            "y": 180
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d3.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 482,
+            "y": 1140
+          },
+          {
+            "x": 90,
+            "y": 1140
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d3.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1149
+          },
+          {
+            "x": 135,
+            "y": 1149
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

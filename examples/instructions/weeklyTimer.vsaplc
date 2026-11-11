@@ -1,0 +1,105 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Weekly timer: the shop light on Q1 is on Monday to Friday from 08:00 to 17:00. Use Tools > Simulated clock to try other days and times quickly.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "weeklyTimer",
+        "cams": [
+          {
+            "days": 31,
+            "onMinute": 480,
+            "offMinute": 1020
+          }
+        ],
+        "x": 340,
+        "y": 140,
+        "label": "Mon-Fri 08:00-17:00",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "output",
+        "n": 1,
+        "x": 640,
+        "y": 160,
+        "label": "Shop light",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "lamp",
+        "x": 440,
+        "y": 830,
+        "label": "Shop light",
+        "props": {
+          "color": "white"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 482,
+            "y": 1086
+          },
+          {
+            "x": 90,
+            "y": 1086
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1095
+          },
+          {
+            "x": 135,
+            "y": 1095
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

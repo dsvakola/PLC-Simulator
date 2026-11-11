@@ -1,0 +1,161 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "Output: a toggle switch on I5 runs a 24 V motor on Q1. Join the motor's earth terminal to the earth of Q1, as on a real machine.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "input",
+        "n": 5,
+        "x": 100,
+        "y": 160,
+        "label": "Motor switch",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "output",
+        "n": 1,
+        "x": 600,
+        "y": 160,
+        "label": "Motor",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 2,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "toggle",
+        "x": 860,
+        "y": 830,
+        "label": "Motor switch",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "motor",
+        "x": 440,
+        "y": 830,
+        "label": "Motor",
+        "props": {}
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.a",
+        "to": "icon.I5p",
+        "color": "red",
+        "points": [
+          {
+            "x": 902,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 620
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.b",
+        "to": "icon.I5s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 958,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 720
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 465.2,
+            "y": 1104
+          },
+          {
+            "x": 90,
+            "y": 1104
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1113
+          },
+          {
+            "x": 135,
+            "y": 1113
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.g",
+        "to": "qcon.Q1g",
+        "color": "earth",
+        "points": [
+          {
+            "x": 610.8,
+            "y": 1122
+          },
+          {
+            "x": 180,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "format": 2,
+  "cpu": "c14",
+  "comment": "AND: the lamp on Q1 lights only when switch A (I5) and switch B (I6) are both on.",
+  "language": "fbd",
+  "ladder": {
+    "networks": [],
+    "scanMs": 10,
+    "symbols": {}
+  },
+  "fbd": {
+    "blocks": [
+      {
+        "id": 1,
+        "k": "input",
+        "n": 5,
+        "x": 100,
+        "y": 120,
+        "label": "Switch A",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 2,
+        "k": "input",
+        "n": 6,
+        "x": 100,
+        "y": 260,
+        "label": "Switch B",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 3,
+        "k": "and",
+        "inputs": 2,
+        "x": 340,
+        "y": 180,
+        "label": "AND",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      },
+      {
+        "id": 4,
+        "k": "output",
+        "n": 1,
+        "x": 600,
+        "y": 200,
+        "label": "Lamp",
+        "titleDx": 0,
+        "titleDy": 0,
+        "labelDx": 0,
+        "labelDy": 0
+      }
+    ],
+    "wires": [
+      {
+        "fromBlock": 1,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 2,
+        "fromPin": 0,
+        "toBlock": 3,
+        "toPin": 1,
+        "points": [],
+        "corners": []
+      },
+      {
+        "fromBlock": 3,
+        "fromPin": 0,
+        "toBlock": 4,
+        "toPin": 0,
+        "points": [],
+        "corners": []
+      }
+    ],
+    "scanMs": 10
+  },
+  "panel": {
+    "devices": [
+      {
+        "id": 1,
+        "kind": "toggle",
+        "x": 860,
+        "y": 830,
+        "label": "Switch A",
+        "props": {}
+      },
+      {
+        "id": 2,
+        "kind": "toggle",
+        "x": 1060,
+        "y": 830,
+        "label": "Switch B",
+        "props": {}
+      },
+      {
+        "id": 3,
+        "kind": "lamp",
+        "x": 440,
+        "y": 830,
+        "label": "Lamp",
+        "props": {
+          "color": "green"
+        }
+      }
+    ],
+    "wires": [
+      {
+        "from": "d1.a",
+        "to": "icon.I5p",
+        "color": "red",
+        "points": [
+          {
+            "x": 902,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 1086
+          },
+          {
+            "x": 1520,
+            "y": 620
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d1.b",
+        "to": "icon.I5s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 958,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 1095
+          },
+          {
+            "x": 1532,
+            "y": 720
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.a",
+        "to": "icon.I6p",
+        "color": "red",
+        "points": [
+          {
+            "x": 1102,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 1104
+          },
+          {
+            "x": 1544,
+            "y": 440
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d2.b",
+        "to": "icon.I6s",
+        "color": "yellow",
+        "points": [
+          {
+            "x": 1158,
+            "y": 1113
+          },
+          {
+            "x": 1556,
+            "y": 1113
+          },
+          {
+            "x": 1556,
+            "y": 540
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d3.p",
+        "to": "qcon.Q1p",
+        "color": "red",
+        "points": [
+          {
+            "x": 482,
+            "y": 1122
+          },
+          {
+            "x": 90,
+            "y": 1122
+          }
+        ],
+        "curved": false
+      },
+      {
+        "from": "d3.n",
+        "to": "qcon.Q1n",
+        "color": "blue",
+        "points": [
+          {
+            "x": 538,
+            "y": 1131
+          },
+          {
+            "x": 135,
+            "y": 1131
+          }
+        ],
+        "curved": false
+      }
+    ],
+    "fixedProps": {}
+  }
+}

@@ -419,24 +419,40 @@ export class FbdEditor {
     const dx = at ? snap(at.x) - minX : 40;
     const dy = at ? snap(at.y) - minY : 40;
     const ids = new Map<number, number>();
+    const full: string[] = [];
     this.mutate(() => {
       let next = this.d.blocks.reduce((m, b) => Math.max(m, b.id), 0);
-      // Each output Q may be used once: a pasted output gets a free number.
-      const usedQ = new Set(this.d.blocks.filter((b) => b.k === "output").map((b) => (b as { n: number }).n));
+      // A pasted I, Q, M, AI or AM block gets the next free number (I1 pastes as I2).
+      const max: Record<string, number> = {
+        input: LIMITS.inputs,
+        output: LIMITS.outputs,
+        flag: LIMITS.markers,
+        analogInput: LIMITS.analogInputs,
+        analogFlag: LIMITS.analogFlags,
+      };
+      const used = new Map<string, Set<number>>();
+      for (const b of this.d.blocks) {
+        if (max[b.k] === undefined) continue;
+        if (!used.has(b.k)) used.set(b.k, new Set());
+        used.get(b.k)?.add((b as { n: number }).n);
+      }
       for (const b of clip.blocks) {
         const nb = structuredClone(b);
         nb.id = ++next;
         nb.x = Math.max(40, b.x + dx);
         nb.y = Math.max(40, b.y + dy);
-        if (nb.k === "output" && usedQ.has(nb.n)) {
-          for (let n = 1; n <= LIMITS.outputs; n++) {
-            if (!usedQ.has(n)) {
-              nb.n = n;
-              break;
-            }
-          }
+        const top = max[nb.k];
+        if (top !== undefined) {
+          const taken = used.get(nb.k) ?? new Set<number>();
+          const numbered = nb as unknown as { n: number };
+          let n = numbered.n + 1;
+          while (n <= top && taken.has(n)) n++;
+          if (n > top) for (n = 1; n <= top && taken.has(n); n++);
+          if (n <= top) numbered.n = n;
+          else full.push(defaultLabel(nb));
+          taken.add(numbered.n);
+          used.set(nb.k, taken);
         }
-        if (nb.k === "output") usedQ.add(nb.n);
         ids.set(b.id, nb.id);
         this.d.blocks.push(nb);
       }
@@ -449,7 +465,11 @@ export class FbdEditor {
     });
     this.sel = { t: "blocks", ids: new Set(ids.values()) };
     this.render();
-    this.hooks.status(`${ids.size} block${ids.size === 1 ? "" : "s"} pasted. Drag them where you want them.`);
+    this.hooks.status(
+      full.length
+        ? `Pasted. Every number is in use, so ${full.join(", ")} kept the same number.`
+        : `${ids.size} block${ids.size === 1 ? "" : "s"} pasted. Drag them where you want them.`,
+    );
   }
 
   // ----- Right-click menus -----
