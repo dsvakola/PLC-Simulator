@@ -1,0 +1,51 @@
+What was taken from the VSA Simulator project folder, and what was not
+================================================================================
+
+Copied on 07 November 2026, from VSA Simulator version 0.8.9 (published to the
+Microsoft Store). The original folder was not changed.
+
+COPIED, to reuse
+----------------
+- Project scaffolding: package.json, pnpm-lock.yaml, vite.config.ts,
+  tsconfig.json, index.html, .gitignore, Cargo.toml (workspace), build.bat,
+  msix.bat, msix\AppxManifest.xml, msix\make-assets.ps1.
+  All of these still name VSA Simulator, its identifier (in.edu.vsa.simulator),
+  its Store identity and its version: they must be changed for the new app
+  before the first build.
+- src-tauri: Cargo.toml, tauri.conf.json, build.rs, capabilities\default.json,
+  icons\, and the shell code: main.rs, lib.rs (About info, the allowed links,
+  open_url allow-list), error.rs, files.rs (open/save dialogs, recent files,
+  start-up file from a double-click), prefs.rs, recent.rs.
+  lib.rs and files.rs still call the circuit simulator's commands (catalogue,
+  simulate, runner, examples, ESP8266 firmware): those lines must be removed.
+- src: main.ts (the old app's whole window logic: use it as an example of the
+  menu bar, keyboard shortcuts, status bar and dialogs, not as-is), api.ts,
+  styles.css, geometry.ts, and the reusable ui pieces: about.ts, help.ts,
+  menu.ts, confirm.ts, source.ts (code viewer with Copy and safe links),
+  icons.ts, picture.ts (export as PNG/JPG), sound.ts. Logos: logo.png,
+  src\assets\app-icon.svg, src\assets\vra-logo.png.
+- Licence files: LICENSE (GPL 3.0), NOTICE, THIRD-PARTY-NOTICES.txt,
+  PRIVACY.md. NOTICE and THIRD-PARTY-NOTICES.txt describe the circuit
+  simulator's firmware; rewrite them for the new app.
+- crates\plc-core: the ladder logic engine (plc\mod.rs and its tests,
+  plc\tests.rs), source unchanged. storage.rs (atomic file saving) is copied
+  next to it for reference only; it still refers to the old project format
+  and is not yet part of lib.rs.
+- REFERENCE\help-body.html: the old User Guide, as a style example for the
+  new app's Help. REFERENCE\Readme.md: the old app's original brief.
+
+NOT COPIED, and why
+-------------------
+- Microcontroller emulators (RP2040 / Raspberry Pi Pico, ESP32, ESP8266, AVR
+  for Arduino and ATmega, 8051): a PLC simulator does not run these chips.
+- Firmware files (MicroPython for Pico and ESP32, the ESP32 ROM, the
+  ESP8266 test copy): only needed by those emulators, and they carry their
+  own third-party licences.
+- Examples (examples\ and crates\vra-core\data\examples.json): circuits and
+  programs for the microcontroller boards; the PLC app needs its own.
+- Breadboard canvas, parts catalogue and part drawings (workspace.ts,
+  parts.ts, canvas.ts, inspector.ts, palette.ts, names.ts, lcdfont.ts,
+  breadboard.rs, catalogue.rs, sim.rs, run.rs, project.rs): they belong to
+  the circuit simulator's look and feel; the PLC app gets its own editor.
+- Build output and tools: target\, node_modules\, web-build\, Release\,
+  store-screenshots, esp32-test\. They are made again by build.bat.

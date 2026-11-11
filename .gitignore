@@ -1,0 +1,5 @@
+node_modules/
+web-build/
+target/
+src-tauri/gen/
+Release/

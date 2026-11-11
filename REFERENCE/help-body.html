@@ -1,0 +1,324 @@
+<h1>VSA Simulator User Guide</h1>
+<h2>1. Welcome</h2>
+<p>VSA Simulator lets you build electronic circuits on a breadboard and run real microcontroller programs on them, entirely offline. Nothing is sent over the internet, and no account is needed.</p>
+<p>It is made for school and college students, teachers, researchers and hobbyists: anyone who wants to try a circuit and its program before building it.</p>
+<p>You can:</p>
+<ul>
+<li>build circuits with Arduino Uno R3, Arduino Uno SMD, Arduino Nano, Arduino Mega 2560, Raspberry Pi Pico W, ESP32 and ESP8266 boards, with AT89C51/52 (8051/8052) and ATmega8, ATmega16, ATmega32 and ATmega128 chips (bare, or on ready-made development boards), together with sensors, resistors, switches, LEDs, motors, displays and power supplies
+</li>
+<li>see them work live: the boards run your programs, sensors and switches respond, LEDs glow, motors turn, displays show text, and parts that get too much current get hot or burn out
+</li>
+<li>load your own programs, exactly as you wrote them, into these boards and chips:
+</li>
+</ul>
+<table>
+<tr><th>Board</th><th>Program type</th><th>Made with</th></tr>
+<tr><td>Arduino Uno / Uno SMD</td><td>.hex</td><td>Arduino IDE</td></tr>
+<tr><td>Arduino Nano</td><td>.hex</td><td>Arduino IDE</td></tr>
+<tr><td>Arduino Mega 2560</td><td>.hex</td><td>Arduino IDE</td></tr>
+<tr><td>Raspberry Pi Pico W</td><td>.py (MicroPython)</td><td>Thonny</td></tr>
+<tr><td>ESP32 DevKit</td><td>.bin (Arduino) or .py (MicroPython)</td><td>Arduino IDE or Thonny</td></tr>
+<tr><td>ESP8266 NodeMCU</td><td>.bin (Arduino) or .py (MicroPython)</td><td>Arduino IDE or Thonny</td></tr>
+<tr><td>AT89C51, AT89C52, AT89S51, AT89S52 (8051/8052) and the 8051 development board</td><td>.hex</td><td>Keil µVision or SDCC</td></tr>
+<tr><td>ATmega8, ATmega16, ATmega32, ATmega128 and their development boards</td><td>.hex</td><td>Arduino IDE (MiniCore, MightyCore, MegaCore), Microchip Studio / AVR Studio, avr-gcc</td></tr>
+</table>
+<p>The simulator is compatible with Arduino, Raspberry Pi Pico, Espressif ESP, 8051 and AVR ATmega boards and chips. Wi-Fi and Bluetooth are not simulated.</p>
+<h2>2. The screen</h2>
+<p>The window has a work area in the middle, two panels on the right, and the Serial Monitor below.</p>
+<table>
+<tr><th>Area</th><th>What it does</th></tr>
+<tr><td>Breadboard tab</td><td>The work area where you build the circuit.</td></tr>
+<tr><td>Code tab</td><td>Load your program here related to the selected development board in your circuit and check its simulation.</td></tr>
+<tr><td>Parts bin (right, top)</td><td>All parts, in groups. Type in the search box to find one. Drag a part onto the work area.</td></tr>
+<tr><td>Inspector (right, bottom)</td><td>Settings of the selected part (colour, resistance, voltage, address) and which of its pins are connected. While simulating it also shows live voltage and current.</td></tr>
+<tr><td>Serial Monitor / Shell (bottom)</td><td>Text from the board, and a box to send text to it. Drag its top edge to make it taller or shorter.</td></tr>
+<tr><td>Bottom toolbar</td><td>Rotate, Flip, Delete, Simulate / Stop, Zoom out, Zoom in, Fit in Window, Actual Size.</td></tr>
+<tr><td>Status bar</td><td>Messages, the pointer position in inches, and the version number.</td></tr>
+<tr><td>Green or yellow bar</td><td>Appears while simulating. Green tells you what you can click; yellow is a warning (see section 4).</td></tr>
+</table>
+<p>The Parts bin, the Inspector and the Serial Monitor can be hidden with the × on each, and shown again from the View menu. View &gt; Presentation mode (F11) fills the screen, which is useful on a classroom projector.</p>
+<h2>3. Building a circuit</h2>
+<p>Drag parts from the Parts bin, drop them on the breadboard, then join them with wires.</p>
+<p><b>The breadboard.</b> Each column of five holes (a to e, and f to j) is joined inside, like a real breadboard. The middle channel separates the two halves. The long red (+) and blue (−) rails along the edges are joined along their whole length. Point at a hole to see which holes are connected to it.</p>
+<p>Choose the breadboard from View &gt; Breadboard: full, half, mini, double (for wide ESP boards), or none. To build without a breadboard, use Edit &gt; Delete breadboard or right-click an empty spot. Undo brings it back.</p>
+<p><b>Placing parts.</b> Parts with legs drop straight into the holes. When you select a part, a green dot marks each connected pin and a red dot each free pin.</p>
+<ul>
+<li>Rotate: Ctrl+R, the toolbar, or right-click. Any angle can be typed in the Inspector.
+</li>
+<li>Flip: the toolbar or right-click. Printed text stays readable.
+</li>
+<li>Duplicate: Ctrl+D. Delete: the Del key.
+</li>
+</ul>
+<p><b>Wires.</b> Click a hole or pin, then click (or drag to) another hole or pin. Esc cancels a wire.</p>
+<ul>
+<li>Drag the middle of a wire to add a bend; hold Shift for a right angle. Double-click a bend to remove it.
+</li>
+<li>Drag a wire end to move it to another hole.
+</li>
+<li>Right-click a wire to change its colour or make it straight or curved. File &gt; Preferences can make all new wires curved.
+</li>
+</ul>
+<p><b>Bendable legs.</b> LEDs, resistors, diodes, capacitors, LDRs and thermistors have legs you can stretch and bend, as in real life. Drag the end of a leg to stretch it; drag its middle to bend it. Hold Alt while dragging from a leg to start a wire instead.</p>
+<p>Everything can be undone with Ctrl+Z and redone with Ctrl+Y.</p>
+<h2>4. Running a simulation</h2>
+<p>Press <b>Simulate</b> (F5) to start and <b>Stop</b> (or Esc) to end. Simulate needs at least one part and a power source: a battery, a supply, or a board.</p>
+<p>While it runs, you can keep changing the circuit and it updates at once. The simulation pauses while the window is minimised.</p>
+<p><b>Working with parts while simulating:</b></p>
+<table>
+<tr><th>Part</th><th>What to do</th></tr>
+<tr><td>Push button</td><td>Hold it down with the mouse.</td></tr>
+<tr><td>Slide and toggle switches</td><td>Click to flip.</td></tr>
+<tr><td>Potentiometer, LDR, thermistor</td><td>Click to open a slider (knob position, light, heat). The mouse wheel works too.</td></tr>
+<tr><td>Ultrasonic sensor, IR sensor</td><td>Click to set how far away the object is.</td></tr>
+<tr><td>DHT11</td><td>Click to set temperature and humidity.</td></tr>
+<tr><td>PIR sensor</td><td>Click to make someone move in front of it.</td></tr>
+<tr><td>DC supply</td><td>Drag a knob up or right, or use the mouse wheel.</td></tr>
+</table>
+<p><b>Warnings.</b> When something is wrong, the bar at the top turns yellow and explains it. Point at the bar to see all warnings.</p>
+<ul>
+<li>An LED with no resistor burns out above about 40 mA. A 220 Ω resistor is a good start.
+</li>
+<li>A resistor gets hot when it carries more power than its rating (0.25 W).
+</li>
+<li>A battery or cell warns when overloaded. &quot;Short circuit!&quot; means a wire goes straight from + to −.
+</li>
+<li>A DC motor is rated 6 V: it runs hot above 9 V and burns out above 18 V.
+</li>
+<li>A module fed more than its maximum voltage is damaged.
+</li>
+</ul>
+<p>Burnt parts show smoke and sparks, just as a warning that the real part would be destroyed.</p>
+<h2>5. Power</h2>
+<p>Every circuit needs a power source. Pick the one that matches the parts you use.</p>
+<table>
+<tr><th>Source</th><th>Voltage</th><th>Safe current</th><th>Good for</th></tr>
+<tr><td>Battery 9 V</td><td>9 V (can be set from 1.5 to 12 V in the Inspector)</td><td>about 1 A</td><td>LEDs, motors, transistor circuits</td></tr>
+<tr><td>Cell 1.5 V (AA)</td><td>1.5 V</td><td>about 2 A</td><td>Wire several in series</td></tr>
+<tr><td>Cell 3.7 V (18650, 2500 mAh)</td><td>3.7 V</td><td>about 5 A</td><td>Two in series give 7.4 V, three give 11.1 V</td></tr>
+<tr><td>Power bank 5 V (USB)</td><td>5 V</td><td>2.1 A</td><td>Logic ICs and 5 V modules</td></tr>
+<tr><td>Variable DC supply</td><td>0 to 30 V, current limit 0.01 to 5 A</td><td>set by you</td><td>Any circuit, like a lab bench supply</td></tr>
+<tr><td>A board (while simulating)</td><td>Powered from USB (5 V)</td><td>small</td><td>Sensors and modules wired to its 5V or 3V3 pin</td></tr>
+</table>
+<p><b>Series and parallel.</b> Join the + of one cell to the − of the next to add their voltages. Join + to + and − to − to share the current.</p>
+<p><b>The variable DC supply.</b> It starts at 5 V with a 1 A limit. Set it by turning its knobs, by double-clicking it, or in the Inspector. Below the limit it holds its voltage (the CV light is on). If the circuit asks for more current than the limit, it holds the current instead and the voltage drops (the CC light is on). A short circuit on the supply is therefore safe, as on a real bench supply.</p>
+<p><b>Safe voltages to remember.</b></p>
+<ul>
+<li>74xx TTL logic chips need 5 V. Their absolute maximum is 7 V; a 12 V supply would destroy them.
+</li>
+<li>The ESP32, ESP8266 and Pico W run at 3.3 V. Their pins, including the analog inputs, must never get more than 3.3 V. For example, feed a potentiometer from the 3V3 pin, not from VIN or VBUS (which carry 5 V).
+</li>
+<li>The Uno and Nano analog inputs read 0 to 5 V.
+</li>
+</ul>
+<h2>6. Parts reference</h2>
+<p>Point at any pin to see its name and what it does. Select a part to change its settings in the Inspector.</p>
+<p><b>LED colours.</b> Select an LED and choose its colour in the Inspector. Each colour needs a different voltage to light, as real LEDs do:</p>
+<table>
+<tr><th>Colour</th><th>Forward voltage</th></tr>
+<tr><td>Red</td><td>1.9 V</td></tr>
+<tr><td>Yellow, amber</td><td>2.0 V</td></tr>
+<tr><td>Green</td><td>2.1 V</td></tr>
+<tr><td>Blue, white</td><td>3.0 V</td></tr>
+</table>
+<p>An LED is dim at 0.05 mA and fully bright at 10 mA. The longer leg is the anode (+).</p>
+<table>
+<tr><th>Group</th><th>Parts</th><th>Notes</th></tr>
+<tr><td>Passive</td><td>Resistor, potentiometer, capacitor, diode</td><td>Resistor value is typed or picked in the Inspector (for example 220, 4.7k, 10k).</td></tr>
+<tr><td>Inputs</td><td>Push button (4-leg and 2-leg), slide switch, SPST, SPDT and DPDT toggle switches, NTC thermistor (10 kΩ), LDR</td><td>The 4-leg button&#x27;s legs on the same side are joined inside.</td></tr>
+<tr><td>Lights</td><td>LED, RGB LED (common cathode, legs R K G B), RGB LED with 2 legs</td><td>The 2-leg RGB LED changes colour by itself; it needs a resistor like any LED.</td></tr>
+<tr><td>Displays</td><td>7-segment FND500 (common cathode), 7-segment FND507 (common anode), LCD 16x2 with I2C backpack, OLED 0.96 in (SSD1306)</td><td>FND500: COM to GND, segment HIGH lights it. FND507: COM to + supply, segment LOW lights it.</td></tr>
+<tr><td>Sensors</td><td>Ultrasonic HC-SR04, DHT11, IR obstacle sensor, PIR motion sensor</td><td>IR sensor OUT goes LOW when an object is near; its range is set in the Inspector.</td></tr>
+<tr><td>Sound and motion</td><td>Active buzzer, servo SG90, DC motor, relay module</td><td>The motor&#x27;s speed follows the voltage and is shown in rpm.</td></tr>
+<tr><td>Microcontroller chips</td><td>AT89C51, AT89C52, AT89S51, AT89S52 (40-pin DIP); ATmega8 (28-pin DIP); ATmega16 and ATmega32 (40-pin DIP); ATmega128 (64-pin chip on an adapter board)</td><td>Bare chips: you wire power, crystal and reset yourself (section 9). Each pin shows its name and function when you point at it.</td></tr>
+<tr><td>Crystals and capacitors</td><td>Crystal 16 MHz, Crystal 11.0592 MHz, Crystal with two 22 pF capacitors (3 legs), ceramic capacitor (22 pF to 100 nF)</td><td>The two legs of a plain crystal are one breadboard hole apart. The capacitor value is chosen in the Inspector.</td></tr>
+<tr><td>Development boards</td><td>8051/8052 board, ATmega8 board, ATmega16/32 board, ATmega128 board</td><td>Chip, 16 MHz crystal, two 22 pF capacitors, reset button and power LED are already on the board (section 9).</td></tr>
+<tr><td>Logic</td><td>NPN and PNP transistors, 74HC595 shift register</td><td>Transistor legs are E, B, C from left to right.</td></tr>
+</table>
+<h2>7. Loading programs</h2>
+<p>Place a board first, then load its program in the <b>Code</b> tab or from the File menu. The File menu offers only the loaders that fit the boards you placed.</p>
+<p><b>Arduino Uno or Nano (Arduino IDE).</b></p>
+<ul>
+<li>Choose the board (Arduino Uno or Arduino Nano) in the Arduino IDE.
+</li>
+<li>Choose <b>Sketch &gt; Export Compiled Binary</b>.
+</li>
+<li>In the simulator, load the file ending in <b>.ino.standard.hex</b> from the sketch&#x27;s build folder (not the one &quot;with_bootloader&quot;).
+</li>
+</ul>
+<p><b>Arduino Mega 2560 (Arduino IDE).</b> Choose the board <b>Arduino Mega or Mega 2560</b>, then Sketch &gt; Export Compiled Binary, and load the <b>.hex</b> file from the build folder (not the one &quot;with_bootloader&quot;). Programs up to 248 KB run, including large ones over 64 KB. If you load a program compiled for the Uno or Nano on a Mega (or the other way round), the simulator tells you which board to choose in the Arduino IDE.</p>
+<p><b>ESP32 DevKit (Arduino IDE).</b> Choose the board <b>ESP32 Dev Module</b>, then Sketch &gt; Export Compiled Binary, and load the file ending in <b>.ino.bin</b> from the build folder.</p>
+<p><b>ESP8266 NodeMCU (Arduino IDE).</b> Choose the board <b>NodeMCU 1.0 (ESP-12E Module)</b>, then Sketch &gt; Export Compiled Binary, and load the file ending in <b>.ino.nodemcu.bin</b>.</p>
+<p>To program the ESP boards in the Arduino IDE you first need Espressif&#x27;s board package. In the Arduino IDE open File &gt; Preferences and add the board manager address for ESP32 (or ESP8266), then install it from Tools &gt; Board &gt; Boards Manager.</p>
+<p><b>MicroPython (Pico W, ESP32, ESP8266) with Thonny.</b> Write the program in Thonny, save it on <b>This computer</b> as a .py file, and load that file. The simulator already contains MicroPython for the Pico W and the ESP32, so nothing needs to be flashed. For the ESP8266, add the firmware once, as described below.</p>
+<p><b>ESP8266 MicroPython firmware.</b> The MicroPython firmware for the ESP8266 is not included with VSA Simulator, because Espressif&#x27;s licence for the software inside it allows its use on ESP8266 chips only. You add it once:</p>
+<ol>
+<li>Choose <b>File &gt; ESP8266 MicroPython firmware…</b> (the same box opens by itself the first time you load or run a MicroPython program on the ESP8266 NodeMCU).</li>
+<li>Click <b>Open micropython.org</b> and download the <b>ESP8266_GENERIC</b> firmware (.bin). Version 1.24.1 is the one VSA Simulator is tested with; other versions work too, with a warning.</li>
+<li>Click <b>Choose file…</b> and pick the downloaded file. VSA Simulator checks it and keeps a copy, so you do this only once.</li>
+</ol>
+<p>Arduino programs for the ESP8266 (.ino.nodemcu.bin) do not need this firmware. VSA Simulator itself never downloads anything.</p>
+<p><b>Live reload.</b> When you export again from the Arduino IDE, or save again in Thonny, the simulator reloads the program by itself. This can be turned off in File &gt; Preferences.</p>
+<p><b>The board while it runs.</b> The board&#x27;s pins drive your circuit, the program reads your buttons and sensors, and the on-board LED shows the program working: pin 13 on the Uno and Nano, GPIO 2 on the ESP32, GPIO 2 on the NodeMCU (lights when LOW), and <code>Pin(&quot;LED&quot;)</code> on the Pico W.</p>
+<h2>8. Boards and wiring</h2>
+<p>The boards are drawn as seen from the top, with the USB socket on the left, and their pins match the real boards. Point at a pin to see its full name.</p>
+<table>
+<tr><th>Board</th><th>Logic level</th><th>Analog inputs</th><th>On-board LED</th><th>I2C: SDA / SCL</th><th>Power for a 5 V module</th></tr>
+<tr><td>Arduino Uno</td><td>5 V</td><td>A0 to A5 (0 to 5 V)</td><td>pin 13</td><td>A4 / A5 (also the SDA and SCL pins beside AREF)</td><td>5V</td></tr>
+<tr><td>Arduino Nano</td><td>5 V</td><td>A0 to A7 (0 to 5 V); A6 and A7 are analog only</td><td>pin 13</td><td>A4 / A5</td><td>5V</td></tr>
+<tr><td>Arduino Mega 2560</td><td>5 V</td><td>A0 to A15 (0 to 5 V)</td><td>pin 13</td><td>20 / 21 (also the SDA and SCL pins beside AREF)</td><td>5V (power header, or the top of the double header)</td></tr>
+<tr><td>Raspberry Pi Pico W</td><td>3.3 V</td><td>GP26, GP27, GP28 (ADC 0 to 2)</td><td>Pin(&quot;LED&quot;)</td><td>GP4 / GP5</td><td>VBUS</td></tr>
+<tr><td>ESP32 DevKit</td><td>3.3 V</td><td>GPIO 32 to 39</td><td>GPIO 2</td><td>D21 / D22</td><td>VIN</td></tr>
+<tr><td>ESP8266 NodeMCU</td><td>3.3 V</td><td>A0 (0 to 3.2 V reads 0 to 1024)</td><td>GPIO 2, lights when LOW</td><td>D2 / D1</td><td>VIN</td></tr>
+</table>
+<p><b>Nano serial pins.</b> D0 is RX0 and D1 is TX1. Leave them free while you use the Serial Monitor.</p>
+<p><b>Arduino Mega 2560 pins.</b> Digital pins 0 to 53 and analog inputs A0 to A15 (which also work as digital pins 54 to 69).</p>
+<ul>
+<li><b>PWM (analogWrite):</b> pins 2 to 13 and 44 to 46, marked ~ on the board.
+</li>
+<li><b>Four serial ports:</b> Serial on 0/1 (RX0/TX0), Serial1 on 19/18, Serial2 on 17/16, Serial3 on 15/14. Serial1 to Serial3 lines appear in the Serial Monitor marked [Serial1], [Serial2] and [Serial3]. What you type in the Serial Monitor goes to Serial.
+</li>
+<li><b>External interrupts (attachInterrupt):</b> pins 2, 3, 18, 19, 20 and 21.
+</li>
+<li><b>I2C:</b> SDA 20, SCL 21. <b>SPI:</b> MISO 50, MOSI 51, SCK 52, SS 53.
+</li>
+<li><b>Double header (22 to 53):</b> even pins on the inner row, odd pins on the outer row, 5V at the top and GND at the bottom.
+</li>
+<li>The EEPROM (4 KB) works with the EEPROM library while the simulation runs.
+</li>
+</ul>
+<p><b>NodeMCU: D labels are not GPIO numbers.</b> The labels printed on the board (D1, D2 …) are different from the GPIO numbers your program uses. In MicroPython <code>Pin()</code> and in Arduino code, always use the GPIO number:</p>
+<table>
+<tr><th>Label</th><th>D0</th><th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>D7</th><th>D8</th></tr>
+<tr><td>GPIO</td><td>16</td><td>5</td><td>4</td><td>0</td><td>2</td><td>14</td><td>12</td><td>13</td><td>15</td></tr>
+</table>
+<p>For example, a wire on D4 is <code>Pin(2)</code> in the program, and D4 also drives the blue on-board LED. A wire on D2 is <code>Pin(4)</code>.</p>
+<p><b>3.3 V boards.</b> On the Pico W, ESP32 and NodeMCU, never feed more than 3.3 V into a pin. Power a potentiometer for an analog input from the 3V3 pin, not from VIN or VBUS.</p>
+<h2>9. 8051 and ATmega chips</h2>
+<p>Besides the ready-made boards, the simulator has bare microcontroller chips and development boards, so students learn to wire a chip as on a real circuit board.</p>
+<p><b>Which chips.</b> AT89C51 and AT89S51 (8051, 4 KB program memory); AT89C52 and AT89S52 (8052, 8 KB, with Timer 2); ATmega8 (8 KB, 28 pins); ATmega16 and ATmega32 (16 and 32 KB, 40 pins); ATmega128 (128 KB, 64-pin chip on an adapter board). Find them in the Parts bin under <b>Microcontroller chips</b>.</p>
+<h3>Wiring a bare 8051 (AT89C51, AT89C52, AT89S51, AT89S52)</h3>
+<ul>
+<li><b>Power:</b> VCC (pin 40) to +5 V and GND (pin 20) to ground. The chip works only between 4 V and 6.6 V; outside that range it does not run.</li>
+<li><b>EA (pin 31)</b> to +5 V, so the chip runs the program inside it.</li>
+<li><b>Crystal:</b> between XTAL1 (pin 19) and XTAL2 (pin 18), with a 22 pF capacitor from each to ground. The simulator runs the program at the crystal's speed, so choose the same frequency (for example 11.0592 MHz) that you chose in your compiler.</li>
+<li><b>Reset:</b> RST (pin 9) to ground through a resistor (for example 8.2 kΩ). A push button from RST to +5 V resets the chip, as on a real board.</li>
+<li><b>Port 0 (P0.0 to P0.7)</b> is open drain: it can pull a pin low but cannot drive it high. Add a 10 kΩ pull-up resistor to +5 V on every Port 0 pin you use. Ports 1, 2 and 3 have built-in pull-ups.</li>
+<li><b>Serial:</b> text sent with SBUF on TXD (P3.1) appears in the Serial Monitor; what you type arrives on RXD (P3.0).</li>
+</ul>
+<h3>Wiring a bare ATmega (ATmega8, ATmega16, ATmega32, ATmega128)</h3>
+<ul>
+<li><b>Power:</b> VCC and AVCC to +5 V, and every GND pin to ground. (ATmega8: VCC pin 7, AVCC pin 20, GND pins 8 and 22. ATmega16 and ATmega32: VCC pin 10, AVCC pin 30, GND pins 11 and 31.) Point at a pin to see its number and name. The chips run between 2.7 V and 6 V.</li>
+<li><b>Clock:</b> select the chip and choose the clock in the Inspector: an <b>external crystal</b> on XTAL1 and XTAL2 with 22 pF capacitors to ground (ATmega8: pins 9 and 10; ATmega16 and ATmega32: pins 13 and 12; ATmega128: pins 24 and 23), or the <b>internal 8 MHz</b> or <b>internal 1 MHz</b> oscillator, which needs no crystal. Choose the same clock in your compiler, or the timing will be wrong.</li>
+<li><b>Reset:</b> RESET has a pull-up resistor inside the chip. A button from RESET to ground resets it.</li>
+<li><b>Serial</b> text appears in the Serial Monitor.</li>
+</ul>
+<h3>The crystal and capacitor parts</h3>
+<ul>
+<li><b>Crystal 16 MHz</b> and <b>Crystal 11.0592 MHz</b> have two legs, one breadboard hole apart, so they plug straight into two neighbouring holes. Their legs point up; the body hangs below the legs.</li>
+<li><b>Crystal with 22 pF capacitors</b> has three legs, X, X and GND, from left to right, with the two capacitors built in. It plugs under the chip's bottom row without turning. On the 8051 the bottom pins read XTAL2, XTAL1, GND, so it fits as it is. Where GND comes first (ATmega8, ATmega16, ATmega32) flip it once with Flip.</li>
+<li><b>Ceramic capacitor</b> is 22 pF at first; select it and choose another value in the Inspector (22 pF, 33 pF, 100 pF, 1 nF, 10 nF, 100 nF).</li>
+</ul>
+<h3>Development boards (no wiring needed)</h3>
+<p>Four development boards in the <b>Boards</b> group bring the chip's ports out to labelled pins and already carry a 16 MHz crystal with two 22 pF capacitors, a reset button and a power LED: <b>8051/8052 board</b>, <b>ATmega8 board</b>, <b>ATmega16/32 board</b> and <b>ATmega128 board</b>. They are powered from USB (5 V) while you simulate. The 8051 board has EA tied to +5 V; the ATmega boards have AVCC tied to +5 V.</p>
+<ul>
+<li>Select the board and choose the <b>chip</b> in the Inspector (8051 board: AT89S52, AT89C52, AT89S51 or AT89C51; ATmega16/32 board: ATmega16 or ATmega32).</li>
+<li>Choose the <b>crystal</b> speed in the Inspector (16 MHz at first; the 8051 board also offers 11.0592 MHz and others). It must match the speed set in your compiler.</li>
+<li>Wire your LEDs, buttons and sensors to the labelled pins, such as P1.0 on the 8051 board or PB0 on an ATmega board.</li>
+<li>The reset button resets the chip while you simulate.</li>
+</ul>
+<h3>Building a program for the 8051 (Keil µVision)</h3>
+<ol>
+<li>In Keil µVision choose <b>Project → New µVision Project</b>, and select the device <b>AT89C51</b>, <b>AT89C52</b> or <b>AT89S52</b> (Atmel).</li>
+<li>Add a C file with <code>#include &lt;reg52.h&gt;</code> and your program.</li>
+<li>Open <b>Options for Target → Target</b> and set <b>Xtal (MHz)</b> to the speed of your crystal, for example 11.0592.</li>
+<li>Open <b>Options for Target → Output</b> and tick <b>Create HEX File</b>.</li>
+<li>Build the target. The <b>.hex</b> file is in the <b>Objects</b> folder of your Keil project.</li>
+<li>In the simulator, select the chip or board, open the <b>Code</b> tab and click <b>Load .hex…</b>. You can also use <b>File → Load 8051 program (.hex)…</b>.</li>
+</ol>
+<p>A free alternative is <b>SDCC</b>: compile with <code>sdcc main.c</code>, then convert with <code>packihx main.ihx &gt; main.hex</code>, and load <b>main.hex</b>.</p>
+<h3>Building a program for the ATmega chips</h3>
+<ul>
+<li><b>Arduino IDE:</b> install the core for your chip (Boards Manager): <b>MiniCore</b> for ATmega8, <b>MightyCore</b> for ATmega16 and ATmega32, <b>MegaCore</b> for ATmega128. Choose the chip, set <b>Clock</b> to the same speed as in the simulator (for example <b>16 MHz external</b>), then <b>Sketch → Export Compiled Binary</b> and load the <b>.hex</b> file from the sketch's build folder (not the one marked "with_bootloader").</li>
+<li><b>Microchip Studio, AVR Studio or avr-gcc:</b> build as usual and load the <b>.hex</b> file. Set the clock frequency (<code>F_CPU</code>) in your project to the speed chosen in the simulator.</li>
+<li>If you load a .hex built for a different chip, the simulator tells you which chip the file was built for.</li>
+</ul>
+<h2>10. I2C displays (LCD 16x2 and OLED)</h2>
+<p>Wire the display&#x27;s four pins to the board&#x27;s power and I2C pins (table in section 8), choose its address in the Inspector, and load your program.</p>
+<p><b>Addresses.</b> Select the display and choose its address in the Inspector. It must match the address in your program.</p>
+<table>
+<tr><th>Display</th><th>Addresses</th></tr>
+<tr><td>LCD 16x2 with I2C backpack</td><td>0x27 (most common) or 0x3F</td></tr>
+<tr><td>OLED 0.96 in (SSD1306, 128 x 64)</td><td>0x3C (most common) or 0x3D</td></tr>
+</table>
+<p><b>You do not need to copy any library files; the simulator adds them itself.</b> For MicroPython it supplies <code>ssd1306</code>, <code>lcd_api</code>, <code>i2c_lcd</code>, <code>machine_i2c_lcd</code>, <code>esp8266_i2c_lcd</code> and <code>pico_i2c_lcd</code> whenever your program imports them. The first start then takes about 1.5 seconds while they are copied. For Arduino programs, the libraries are already inside your exported .hex or .bin.</p>
+<p><b>ESP8266 MicroPython.</b> Create the bus without a bus number: <code>I2C(sda=Pin(4), scl=Pin(5))</code>. Writing <code>I2C(0, sda=..., scl=...)</code> gives &quot;TypeError: extra keyword arguments given&quot;, exactly as on a real board.</p>
+<p><b>&quot;OSError: ENODEV&quot;</b> means the program found no display at that address. Check the wiring, the power pin, and that the Inspector address matches the program.</p>
+<h2>11. Serial Monitor and Shell</h2>
+<p>The lower pane shows what the board prints. It is called <b>Serial Monitor</b> for Arduino programs and <b>Shell</b> for MicroPython programs, as in the Arduino IDE and Thonny.</p>
+<ul>
+<li><code>Serial.print()</code> in Arduino and <code>print()</code> in MicroPython appear here.
+</li>
+<li>Type in the box at the bottom and press Enter (or Send) to send text to the board, for <code>Serial.read()</code> or <code>input()</code>.
+</li>
+<li><b>Clear</b> empties the pane. It is also emptied when you open, create or close a project.
+</li>
+<li>With two or more boards running, each line starts with the board&#x27;s name.
+</li>
+<li>Drag the pane&#x27;s top edge to change its height; double-click the edge for the normal height.
+</li>
+<li>Hide it with its × and show it again with Ctrl+Shift+M or the button in the status bar.
+</li>
+</ul>
+<h2>12. Files, pictures, preferences and shortcuts</h2>
+<p><b>Projects</b> are saved as .vsasim files, which hold the circuit and the loaded programs. Older .vrasim files still open. File &gt; Recent lists the last projects. File &gt; Close empties the work area until you choose New or Open.</p>
+<p><b>Examples.</b> File &gt; Examples holds ready-made circuits with their programs for every board and chip, from Blink to displays, sensors and motors. Choose the board, then the example. It opens as a new project: press Simulate (F5) to run it. In the Code tab, <b>Source code</b> shows the program with comments, and <b>Copy</b> puts it on the clipboard so you can paste it into the Arduino IDE, Keil or Thonny, change it, build it and load the new file. To keep your changes to a circuit, use File &gt; Save as. The same examples are on GitHub.</p>
+<p>For the ATmega8, ATmega16, ATmega32 and ATmega128, every example comes in two styles with the same circuit: <b>Arduino IDE style</b> (examples 01 to 11) and <b>plain C</b> for AVR Studio 4/6 (Microchip Studio) with avr-gcc (examples 12 to 22, whose names end in -C). So one chip, the heart of the Arduino boards, can be programmed both ways. The example circuits use neat wires with 90-degree turns, bundled side by side like a data bus.</p>
+<p><b>Export as picture</b> (Ctrl+E) saves the circuit as PNG (see-through background) or JPG (white background) at 300 to 600 dpi, with an optional title. Use it for worksheets and reports.</p>
+<p><b>Preferences</b> (File &gt; Preferences, Ctrl+,): align to grid, curvy wires, show grid, buzzer sound, reload programs when they change, and the breadboard for new projects.</p>
+<table>
+<tr><th>Action</th><th>Keys</th></tr>
+<tr><td>New, Open, Close</td><td>Ctrl+N, Ctrl+O, Ctrl+W</td></tr>
+<tr><td>Save, Save as</td><td>Ctrl+S, Ctrl+Shift+S</td></tr>
+<tr><td>Export as picture</td><td>Ctrl+E</td></tr>
+<tr><td>Undo, Redo</td><td>Ctrl+Z, Ctrl+Y</td></tr>
+<tr><td>Duplicate, Delete</td><td>Ctrl+D, Del</td></tr>
+<tr><td>Rotate</td><td>Ctrl+R</td></tr>
+<tr><td>Simulate / Stop</td><td>F5 / Esc</td></tr>
+<tr><td>Zoom in, out, fit</td><td>Ctrl++, Ctrl+−, Ctrl+0</td></tr>
+<tr><td>Breadboard view</td><td>Ctrl+1</td></tr>
+<tr><td>Serial Monitor</td><td>Ctrl+Shift+M</td></tr>
+<tr><td>Presentation mode</td><td>F11</td></tr>
+<tr><td>Preferences</td><td>Ctrl+,</td></tr>
+</table>
+<h2>13. Troubleshooting</h2>
+<table>
+<tr><th>What you see</th><th>Likely cause and fix</th></tr>
+<tr><td>Simulate does nothing</td><td>There is no power source, or no parts. Add a battery, a supply or a board.</td></tr>
+<tr><td>A part shows a red dot on a pin</td><td>That pin is not connected. Push it into a hole or wire it.</td></tr>
+<tr><td>LED stays dark</td><td>It is the wrong way round (the longer leg, the anode, goes to +), or the voltage is too low for its colour (see section 6).</td></tr>
+<tr><td>LED burns out at once</td><td>No resistor. Add 220 Ω in series.</td></tr>
+<tr><td>&quot;Short circuit!&quot; warning</td><td>A wire goes straight from + to − of a battery.</td></tr>
+<tr><td>Program does not change the circuit</td><td>The wire is on a different pin than the program uses. On the NodeMCU, D labels are not GPIO numbers (section 8).</td></tr>
+<tr><td>Analog value stuck at maximum on an ESP or Pico</td><td>The input is fed from 5 V (VIN or VBUS). Use 3V3. On the ESP32, use GPIO 32 to 39.</td></tr>
+<tr><td>&quot;OSError: ENODEV&quot; with a display</td><td>Wrong address in the Inspector, or SDA and SCL swapped or not powered.</td></tr>
+<tr><td>&quot;TypeError: extra keyword arguments given&quot; on ESP8266</td><td>Use <code>I2C(sda=Pin(4), scl=Pin(5))</code> with no bus number.</td></tr>
+<tr><td>Arduino program will not load</td><td>Load the .ino.standard.hex (Uno, Nano), .ino.bin (ESP32) or .ino.nodemcu.bin (ESP8266) file, exported for the right board.</td></tr>
+<tr><td>Nothing appears in the Serial Monitor</td><td>Check <code>Serial.begin(9600)</code> in the program, and that nothing is wired to D0 or D1 on the Uno or Nano.</td></tr>
+</table>
+<h2>14. Reliability and About</h2>
+<p><b>Tested for long runs.</b> VSA Simulator passed a 30-minute soak test with a worst-case Arduino program. Memory use stayed flat at about 5 MB and the simulation did not slow down, so it can run for a whole class period.</p>
+<p><b>About.</b> VSA Simulator is developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar for Vidyasagar Academy.</p>
+<ul>
+<li>Website: <a href="#" data-link="website">vsa.edu.in/software</a>
+</li>
+<li>GitHub: <a href="#" data-link="github">github.com/dsvakola/VSA-Simulator</a> (programs, circuits and updates)
+</li>
+<li>E-mail: <a href="#" data-link="email">softinquiry@vsa.edu.in</a>
+</li>
+<li>Licence: GNU General Public License version 3 (GPL 3.0). You may use, study, share and change the program under that licence; the full text is in the LICENSE file. Help &gt; About shows the version number.
+</li>
+<li>It includes MicroPython and other open-source parts under their own licences, listed in THIRD-PARTY-NOTICES.txt next to the program.
+</li>
+</ul>
+<p>Arduino, Raspberry Pi and Espressif are trademarks of their owners. VSA Simulator is compatible with their boards but is not made by them.</p>

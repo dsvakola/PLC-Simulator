@@ -1,0 +1,1595 @@
+/* PLC Simulator: an industrial control-room look. Dark charcoal and steel
+   blue by default, with amber for live power flow and the usual PLC light
+   colours (green RUN, amber STOP, red ERROR). A light theme suits classroom
+   projectors. Everything is drawn with CSS and SVG, so it is sharp at any
+   screen scaling. */
+
+:root,
+[data-theme="dark"] {
+  --bg: #11151b;
+  --bg-2: #161b23;
+  --panel: #1a2029;
+  --panel-2: #202834;
+  --panel-3: #283241;
+  --border: #2d3746;
+  --border-strong: #3b4759;
+  --text: #dfe5ed;
+  --text-2: #a9b4c2;
+  --muted: #7d8a9b;
+  --accent: #4f93dd;
+  --accent-2: #7bb1ea;
+  --accent-bg: rgba(79, 147, 221, 0.16);
+  --power: #f2a52b;
+  --power-glow: rgba(242, 165, 43, 0.45);
+  --rail: #6fa6e0;
+  --rung-off: #556275;
+  --run: #33c96a;
+  --run-glow: rgba(51, 201, 106, 0.55);
+  --stop: #f2a52b;
+  --error: #e5534b;
+  --led-off: #2f3947;
+  --module: linear-gradient(180deg, #2b3442 0%, #232b37 100%);
+  --module-edge: #3f4b5e;
+  --terminal: #161c25;
+  --shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+  --menu-bg: #222a36;
+  --hover: rgba(255, 255, 255, 0.06);
+  --kbd: #2a3443;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #e9edf2;
+  --bg-2: #f1f4f7;
+  --panel: #f8fafc;
+  --panel-2: #eef2f6;
+  --panel-3: #e2e8ef;
+  --border: #d0d8e2;
+  --border-strong: #b8c3d0;
+  --text: #1b2430;
+  --text-2: #3d4a5a;
+  --muted: #687586;
+  --accent: #1f6fc4;
+  --accent-2: #1a5ea8;
+  --accent-bg: rgba(31, 111, 196, 0.12);
+  --power: #d98400;
+  --power-glow: rgba(217, 132, 0, 0.35);
+  --rail: #2a69ad;
+  --rung-off: #9aa7b6;
+  --run: #1fa752;
+  --run-glow: rgba(31, 167, 82, 0.45);
+  --stop: #d98400;
+  --error: #cf3a32;
+  --led-off: #c3ccd7;
+  --module: linear-gradient(180deg, #fbfcfd 0%, #e4e9ef 100%);
+  --module-edge: #c2ccd8;
+  --terminal: #d9e0e8;
+  --shadow: 0 10px 30px rgba(20, 30, 45, 0.18);
+  --menu-bg: #ffffff;
+  --hover: rgba(10, 30, 60, 0.06);
+  --kbd: #e6ebf1;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.4 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+code,
+kbd,
+.io-addr,
+.scan-readout {
+  font-family: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+}
+
+#app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 38px 46px 34px minmax(0, 1fr) 26px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- App bar and menus ---------- */
+
+.appbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 12px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.menubar {
+  display: flex;
+  gap: 2px;
+}
+
+.menubar-item {
+  border: 0;
+  background: transparent;
+  padding: 5px 11px;
+  border-radius: 6px;
+  cursor: default;
+  color: var(--text-2);
+}
+
+.menubar-item:hover,
+.menubar-item.open {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.appbar-project {
+  margin-left: auto;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40%;
+}
+
+.menu-popup {
+  position: fixed;
+  z-index: 1000;
+  min-width: 230px;
+  padding: 5px;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  box-shadow: var(--shadow);
+}
+
+.menu-popup.leaf {
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+}
+
+.menu-popup.sub {
+  position: absolute;
+  left: 100%;
+  top: -6px;
+  margin-left: 2px;
+}
+
+.menu-popup.sub.left {
+  left: auto;
+  right: 100%;
+  margin-right: 2px;
+}
+
+.menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 6px 10px 6px 4px;
+  border-radius: 6px;
+  text-align: left;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.menu-item:hover:not(:disabled) {
+  background: var(--accent);
+  color: #fff;
+}
+
+.menu-item:disabled {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.menu-tick {
+  width: 18px;
+  text-align: center;
+  color: var(--accent-2);
+}
+
+.menu-item:hover:not(:disabled) .menu-tick {
+  color: #fff;
+}
+
+.menu-label {
+  flex: 1;
+}
+
+.menu-key {
+  color: var(--muted);
+  margin-left: 24px;
+  font-size: 12px;
+}
+
+.menu-item:hover:not(:disabled) .menu-key {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.menu-more {
+  color: var(--muted);
+}
+
+.menu-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.menu-sep {
+  height: 1px;
+  margin: 5px 8px;
+  background: var(--border);
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.tool {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-2);
+}
+
+.tool:hover:not(:disabled) {
+  background: var(--hover);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.tool:disabled {
+  opacity: 0.4;
+}
+
+.tool-sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 6px;
+  background: var(--border);
+}
+
+.runstop {
+  display: flex;
+  padding: 3px;
+  gap: 3px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.rs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.rs:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.rs-run.active {
+  background: var(--run);
+  color: #06210f;
+  box-shadow: 0 0 14px var(--run-glow);
+}
+
+.rs-stop.active {
+  background: var(--stop);
+  color: #2b1a00;
+}
+
+.scan-readout {
+  margin-left: 12px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 12px;
+}
+
+/* ---------- Tabs ---------- */
+
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 10px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tab-btn svg {
+  color: var(--accent-2);
+}
+
+.tab-btn:hover:not(:disabled):not(.active) {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.tab-btn.active {
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: inset 0 2px 0 var(--power);
+}
+
+.tab-btn:disabled {
+  opacity: 0.45;
+}
+
+.tool.icon-only {
+  padding: 0;
+  width: 32px;
+  justify-content: center;
+}
+
+/* ---------- Workbench: left pane and diagram editor ---------- */
+
+.workbench {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+.pane-head {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.pane-body {
+  flex: 1;
+  overflow: auto;
+  padding: 6px 8px 14px;
+}
+
+.pane-section h4 {
+  margin: 10px 4px 6px;
+  padding-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.diagram-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--accent-bg);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.diagram-item svg {
+  color: var(--accent-2);
+}
+
+.diagram-item em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.tree-group {
+  margin-bottom: 2px;
+}
+
+.tree-folder {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  text-align: left;
+}
+
+.tree-folder:hover {
+  background: var(--hover);
+}
+
+.tree-folder .chev {
+  display: grid;
+  transition: transform 0.12s;
+  transform: rotate(90deg);
+  color: var(--muted);
+}
+
+.tree-group[data-open="false"] .chev {
+  transform: none;
+}
+
+.tree-group[data-open="false"] .tree-items {
+  display: none;
+}
+
+.tree-items {
+  margin: 2px 0 6px 18px;
+  padding-left: 8px;
+  border-left: 1px dashed var(--border-strong);
+}
+
+.pal-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: grab;
+}
+
+.pal-item:hover {
+  background: var(--panel-3);
+}
+
+.pal-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A small yellow chip, like the blocks in the drawing. */
+.chip {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 28px;
+  height: 20px;
+  padding: 0 4px;
+  background: #ffdf8c;
+  border: 2px solid #111111;
+  color: #111111;
+  font: 600 12px/1 "Times New Roman", Times, serif;
+}
+
+.drag-ghost {
+  position: fixed;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 6px;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.editor-head {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #dfe5ed;
+  background: #1c2430;
+  border-bottom: 1px solid var(--border);
+}
+
+.diagram-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 38px;
+  padding: 0 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.diagram-bar .hint {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The drawing area is always white, so the black block borders show well. */
+.canvas {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #ffffff;
+}
+
+.canvas svg.diagram {
+  display: block;
+  user-select: none;
+  touch-action: none;
+}
+
+.canvas .blk {
+  cursor: move;
+}
+
+.canvas .pin {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+.canvas .pin:hover {
+  fill: rgba(31, 111, 196, 0.35);
+}
+
+.canvas .wire {
+  cursor: pointer;
+}
+
+/* ---------- Form additions ---------- */
+
+.form-rows {
+  max-height: min(60vh, 560px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.form-heading {
+  margin: 14px 0 2px;
+  padding-bottom: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.form-row > span:first-child {
+  min-width: 150px;
+}
+
+.form-row.text input,
+.form-row.time input {
+  flex: 1;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.form-days {
+  display: flex;
+  gap: 6px;
+}
+
+.form-days > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.form-days small {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* ---------- Control panel tab ---------- */
+
+.workbench.right {
+  grid-template-columns: minmax(0, 1fr) 270px;
+}
+
+.workbench[hidden] {
+  display: none;
+}
+
+.pane-right {
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+
+.panel-canvas {
+  background: #cdd3dc;
+}
+
+.panel-canvas svg.panel-svg {
+  display: block;
+  user-select: none;
+  touch-action: none;
+}
+
+.panel-svg .dev.extra {
+  cursor: move;
+}
+
+.panel-svg .term {
+  cursor: crosshair;
+}
+
+.panel-svg .term:hover circle:first-of-type {
+  stroke: #1f6fc4;
+  stroke-width: 3;
+}
+
+.panel-svg .pwire {
+  cursor: pointer;
+}
+
+.dev-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: grab;
+}
+
+.dev-item:hover {
+  background: var(--panel-3);
+}
+
+.dev-item svg {
+  flex: none;
+  border-radius: 5px;
+  background: #eef1f5;
+  border: 1px solid #b3bbc6;
+}
+
+.wiring-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px;
+}
+
+.btn.small {
+  height: auto;
+  min-height: 30px;
+  padding: 6px 12px;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.bar-label {
+  margin-right: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  margin: 0 3px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: var(--c);
+}
+
+.swatch.on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-bg);
+}
+
+.tool[hidden] {
+  display: none;
+}
+
+/* ---------- Status bar ---------- */
+
+.statusbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+#status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#status-text.error {
+  color: var(--error);
+}
+
+.mode-chip {
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  background: var(--stop);
+  color: #2b1a00;
+}
+
+.mode-chip.run {
+  background: var(--run);
+  color: #06210f;
+}
+
+/* ---------- Dialogs ---------- */
+
+dialog {
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+dialog::backdrop {
+  /* Light, so the diagram behind a dialog can still be read. */
+  background: rgba(5, 10, 18, 0.18);
+}
+
+.about-close,
+.dialog-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.btn {
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: var(--panel-2);
+}
+
+.btn:hover {
+  background: var(--panel-3);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn.primary:hover {
+  filter: brightness(1.08);
+}
+
+.ask {
+  width: min(460px, calc(100vw - 32px));
+  padding: 20px 22px 18px;
+}
+
+.ask h2 {
+  margin: 0 30px 10px 0;
+  font-size: 16px;
+}
+
+.ask p {
+  white-space: pre-line;
+  margin: 0 0 18px;
+  color: var(--text-2);
+}
+
+.ask-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ask-field,
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.form-row {
+  flex-wrap: wrap;
+}
+
+.form-row.select span {
+  flex: 1;
+}
+
+.form-row em {
+  flex-basis: 100%;
+  margin-left: 26px;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-style: normal;
+}
+
+.form-row select,
+.form-row input[type="number"],
+.ask-field input {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.form-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.shortcuts table,
+.help-text table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.shortcuts td {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+kbd {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--kbd);
+  border: 1px solid var(--border-strong);
+  font-size: 12px;
+}
+
+/* About */
+
+.about {
+  width: min(520px, calc(100vw - 32px));
+}
+
+.about-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, #1d3a5c 0%, #10202f 100%);
+  color: #fff;
+}
+
+.about-banner h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.about-version {
+  margin: 2px 0 0;
+  color: #b9cce0;
+}
+
+.about .dialog-close {
+  color: #d5e2ef;
+}
+
+.about-body {
+  padding: 16px 24px 20px;
+}
+
+.about-body > p:first-child {
+  margin-top: 0;
+  color: var(--text-2);
+}
+
+.about-dev {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+}
+
+.about-dev p {
+  margin: 1px 0;
+}
+
+.about-logo {
+  border-radius: 8px;
+  background: #fff;
+  padding: 4px;
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.small {
+  font-size: 11.5px;
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.link-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--accent-2);
+}
+
+.link-btn:hover {
+  background: var(--accent-bg);
+}
+
+/* Help */
+
+.help {
+  width: min(980px, calc(100vw - 48px));
+  height: min(760px, calc(100vh - 48px));
+}
+
+.help[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.help-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 10px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.help-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.help-nav {
+  overflow: auto;
+  padding: 12px 8px;
+  border-right: 1px solid var(--border);
+}
+
+.help-nav a {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+.help-nav a:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.help-text {
+  overflow: auto;
+  padding: 6px 28px 28px;
+  user-select: text;
+  line-height: 1.55;
+}
+
+.help-text h1 {
+  font-size: 22px;
+}
+
+.help-text h2 {
+  margin-top: 26px;
+  font-size: 16px;
+  color: var(--accent-2);
+}
+
+.help-text td,
+.help-text th {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.help-text code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--panel-3);
+}
+
+.help-text a {
+  color: var(--accent-2);
+}
+
+/* Scroll bars that match the theme */
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------- Simulation on the control panel ---------- */
+
+.panel-canvas {
+  background: #d3d8df;
+}
+
+.panel-svg.simulating .dev.extra {
+  cursor: default;
+}
+
+.panel-svg.simulating .term {
+  cursor: default;
+}
+
+.panel-svg .dev.live {
+  cursor: pointer;
+}
+
+.panel-svg .dev.fixed[data-fixed^="swI"] {
+  cursor: pointer;
+}
+
+.panel-svg .spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: panel-spin 0.5s linear infinite;
+}
+
+.panel-svg .spin.rev {
+  animation-direction: reverse;
+}
+
+.panel-svg .pulse {
+  animation: panel-pulse 0.4s ease-in-out infinite;
+}
+
+@keyframes panel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes panel-pulse {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.tool#tb-sim.on {
+  background: var(--run-glow);
+  border-color: var(--run);
+  color: var(--text);
+}
+
+.dev-group {
+  margin: 10px 0 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dev-group:first-child {
+  margin-top: 0;
+}
+
+.pane-note {
+  margin: 0 0 10px;
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+body.simulating .dev-item {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sim-slider {
+  position: fixed;
+  z-index: 2500;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 230px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--menu-bg);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font-size: 12px;
+}
+
+.sim-slider-title {
+  font-weight: 700;
+}
+
+.sim-slider input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.sim-slider output {
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-slider.dead output::after {
+  content: "  (not wired correctly)";
+  color: var(--error);
+}
+/* ---------- Control panel: zoom and wire menu ---------- */
+
+.panel-canvas {
+  scrollbar-gutter: stable;
+}
+
+.panel-svg .bend,
+.panel-svg .wend {
+  cursor: grab;
+}
+
+.panel-svg .pwire path:first-child {
+  cursor: copy;
+}
+
+.ctx-menu {
+  position: fixed;
+  z-index: 2600;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--menu-bg);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+}
+
+.ctx-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 2px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.ctx-item {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ctx-item:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.ctx-item:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ctx-sep {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--border);
+}
+/* ---------- Program tab: selection, panning, simulation bar ---------- */
+
+.canvas svg.diagram.panning,
+.panel-svg.panning {
+  cursor: grabbing;
+}
+
+.canvas svg.diagram .corner {
+  cursor: move;
+}
+
+.panel-canvas svg.panel-svg:not(.simulating) {
+  cursor: grab;
+}
+
+.panel-canvas svg.panel-svg:not(.simulating) .dev.fixed {
+  cursor: default;
+}
+
+.panel-canvas svg.panel-svg:not(.simulating) .dev.extra {
+  cursor: move;
+}
+
+.sim-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 13px;
+}
+
+.sim-bar[hidden] {
+  display: none;
+}
+
+.sim-bar-title {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sim-in,
+.sim-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 52px;
+  padding: 5px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  user-select: none;
+}
+
+.sim-in {
+  cursor: pointer;
+}
+
+.sim-in:hover {
+  background: var(--panel-3);
+}
+
+.sim-in.on,
+.sim-light.on {
+  border-color: #e0201b;
+}
+
+.sim-bar .led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--led-off);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.sim-bar .on .led {
+  background: #3bdc6c;
+  box-shadow: 0 0 8px #3bdc6c;
+}
+
+.sim-bar .on .led.out {
+  background: #f2a52b;
+  box-shadow: 0 0 8px #f2a52b;
+}
+
+.sim-ai,
+.sim-run {
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+.sim-run.bad {
+  color: var(--error);
+  font-weight: 700;
+}
+
+/* ---------- Dialogs can be moved by their title ---------- */
+
+dialog > h2,
+.help-bar,
+.about-banner {
+  cursor: move;
+  user-select: none;
+}
+
+body.moving-dialog,
+body.moving-dialog * {
+  cursor: move !important;
+  user-select: none;
+}
+
+.canvas svg.diagram .piece {
+  cursor: move;
+}
+
+/* The main window cannot be closed while a dialog is open: the dialog shakes. */
+dialog.nudge {
+  animation: dialog-nudge 0.35s ease-in-out;
+}
+
+@keyframes dialog-nudge {
+  20% {
+    translate: -8px 0;
+  }
+  40% {
+    translate: 8px 0;
+  }
+  60% {
+    translate: -5px 0;
+  }
+  80% {
+    translate: 5px 0;
+  }
+}
+
+/* ---------- Simulation strip under the diagram ---------- */
+
+.sim-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 4px;
+  padding: 6px 10px;
+  border-top: 2px solid var(--border-strong);
+  background: var(--panel-2);
+}
+
+.sim-strip[hidden] {
+  display: none;
+}
+
+.strip-group {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 0 8px;
+  border-right: 1px solid var(--border-strong);
+}
+
+.strip-group:last-child {
+  border-right: 0;
+}
+
+.strip-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 50px;
+  padding: 3px 4px 2px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  user-select: none;
+}
+
+.strip-btn {
+  cursor: pointer;
+  border-color: var(--border);
+  background: var(--panel);
+}
+
+.strip-btn:hover {
+  border-color: var(--accent);
+}
+
+.strip-btn.held {
+  background: var(--accent-bg);
+}
+
+.strip-icon {
+  display: flex;
+  height: 34px;
+}
+
+.strip-name {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.strip-value {
+  font-size: 11px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.strip-none {
+  align-self: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.strip-controls {
+  align-items: center;
+  margin-left: auto;
+}
+
+.strip-ctl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.strip-ctl:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.strip-ctl:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.strip-ctl.pause.on {
+  background: #ffe7bf;
+  border-color: #e08a00;
+}
+
+.strip-time {
+  min-width: 52px;
+  padding: 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.strip-time.bad {
+  color: var(--error);
+  font-size: 12px;
+}
+
+/* Right-click menus: the key beside an item. */
+.ctx-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ctx-item kbd {
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+}

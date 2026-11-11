@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "VSA Simulator",
+  "version": "0.8.9",
+  "identifier": "in.edu.vsa.simulator",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../web-build"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "title": "VSA Simulator",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 960,
+        "minHeight": 600,
+        "center": true,
+        "visible": true,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,Translate,msEdgeTranslate,AutofillServerCommunication --disable-background-networking --disable-component-update --no-pings"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: asset:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost; font-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "publisher": "Vidyasagar Academy",
+    "copyright": "Copyright (C) 2026 Vidyasagar Academy. Licensed under GPL-3.0.",
+    "category": "Education",
+    "shortDescription": "Circuit simulator for school and college students, researchers and hobbyists",
+    "longDescription": "VSA Simulator lets students build circuits on a virtual breadboard with Arduino Uno, Nano and Mega 2560, ESP32, ESP8266, Raspberry Pi Pico W, 8051 and ATmega chips, load their programs and watch them run. Developed by Prof. Dattaraj S. Vidyasagar & Prof. Yash D. Vidyasagar for Vidyasagar Academy.",
+    "homepage": "https://vsa.edu.in/software/",
+    "license": "GPL-3.0-only",
+    "licenseFile": "../LICENSE",
+    "resources": {
+      "../LICENSE": "LICENSE",
+      "../NOTICE": "NOTICE",
+      "../THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.txt",
+      "../PRIVACY.md": "PRIVACY.md"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "embedBootstrapper"
+      },
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "installMode": "perMachine",
+        "displayLanguageSelector": false
+      }
+    }
+  }
+}

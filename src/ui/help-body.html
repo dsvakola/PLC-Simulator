@@ -1,0 +1,80 @@
+<h1>PLC Simulator User Guide</h1>
+<p>PLC Simulator lets you learn how a programmable logic controller (PLC) works. You write a program, put the simulated CPU into RUN, and watch what it does with its inputs and outputs. Everything works offline, on your own computer.</p>
+
+<h2>What a PLC does</h2>
+<p>A PLC is a small industrial computer that controls machines. It works in a never-ending loop called the <em>scan cycle</em>:</p>
+<ol>
+  <li>It reads all its inputs (push buttons, switches, sensors): <code>I1</code> to <code>I8</code>.</li>
+  <li>It works out the program, block by block.</li>
+  <li>It writes the results to its outputs (lamps, contactors, motors): <code>Q1</code> to <code>Q4</code>.</li>
+</ol>
+<p>Then it starts again. A full cycle takes a few milliseconds, so the machine seems to react at once.</p>
+
+<h2>The window</h2>
+<ul>
+  <li><strong>Program</strong> tab: draw your program as a function block diagram (FBD). Drag blocks from the left and join their pins.</li>
+  <li><strong>Control Panel</strong> tab: the academy's PLC training panel, with the field devices you add and the wires you draw.</li>
+</ul>
+
+<h2>Drawing the program</h2>
+<ul>
+  <li>Drag blocks from the left onto the drawing area.</li>
+  <li>To join two blocks, press on a pin, drag to a pin of the other block and let go. A straight line follows the mouse; the pin it will join shows a green dot (a red dot if it cannot take the wire). The wire then finds its own way at right angles. If you let go elsewhere, no wire is made.</li>
+  <li>Click a wire to select it: red squares mark its corners and blue dots its pieces. Drag a piece (or the wire itself) or a corner to change the path. Double-click a red square or blue dot to let the path be drawn automatically again. When you move a block alone, its wires find their way again.</li>
+  <li>An output block Q also has an output pin: wire it back into the program to make a latch, for example Q1 = (I1 OR Q1) AND NOT I2.</li>
+  <li>A free input of an AND or NAND counts as 1, a free input of an OR, NOR or XOR counts as 0. The small grey 1 or 0 beside the pin shows it.</li>
+  <li><kbd>Ctrl+A</kbd> selects every block; draw a frame on an empty spot to select the blocks inside it; <kbd>Shift</kbd>+click adds a block. Drag one selected block to move them all. Selected blocks show red corners.</li>
+  <li><kbd>Ctrl+X</kbd>, <kbd>Ctrl+C</kbd> and <kbd>Ctrl+V</kbd> cut, copy and paste blocks (with the wires between them). A pasted output gets a free Q number.</li>
+  <li>Right-click a block, a wire or an empty spot for a menu of what can be done there. This works on the Control Panel too.</li>
+  <li>Double-click an input I1 to I4 for its simulation mode: Switch (the default), Momentary push button (make), Momentary push button (break) or Frequency. It is the same setting as the switch on the Control Panel.</li>
+  <li>Every dialog window can be moved by its title, so you can see the diagram behind it. While a dialog is open, the program cannot be closed.</li>
+  <li>The middle mouse button moves the view, in the Program tab and on the Control Panel. On the Control Panel you can also drag an empty spot.</li>
+</ul>
+
+<h2>Testing the program in the Program tab</h2>
+<p>While the simulation runs, wires that are on turn red, and a strip under the diagram shows each input and output the program uses:</p>
+<ul>
+  <li>An input in Switch mode is a small slide switch: click it to switch it on or off. A push button works while you hold the mouse button down. A frequency input switches by itself. I5 to I8 are set by the devices wired on the Control Panel.</li>
+  <li>Each output is a lamp that lights when it is on.</li>
+  <li>On the right: run, pause (time stands still) and stop, the time of the simulated clock, and the clock button.</li>
+  <li><kbd>Esc</kbd> stops the simulation.</li>
+</ul>
+<p><strong>Tools &gt; Simulated clock</strong> sets the date and time the weekly and yearly timers see: the PC's clock or a date and time you choose. It can run at real time, a minute every second, or an hour every second, so timers can be tested without waiting.</p>
+
+<h2>The Control Panel</h2>
+<p>The panel is wired inside, like the real one. You cannot see or change that wiring:</p>
+<ul>
+  <li>The four lamps <strong>Q1 to Q4</strong> light when those outputs are on.</li>
+  <li>The four switches <strong>I1 to I4</strong> feed those inputs. Double-click a switch to make it NO or NC, and momentary (a push button) or maintained (stays where you put it).</li>
+  <li>The <strong>Q connector</strong> has three terminals for each output: <strong>+</strong> (24 V while the output is on), <strong>−</strong> (0 V) and earth. Join a load between + and −, and join the earth terminal of a motor to earth.</li>
+  <li>The <strong>I connector</strong> has three terminals for each of I5 to I8: <strong>+</strong> (+24 V), <strong>−</strong> (0 V) and <strong>S</strong> (the signal to the PLC). A switch or 2-wire sensor goes from + to S. A 3-wire sensor: brown to +, blue to −, black to S.</li>
+  <li>Only <strong>I7 and I8</strong> read analog signals (0 to 10 V). In the program they are <code>AI1</code> (I7) and <code>AI2</code> (I8), counting 0 to 1000 for 0 to 10 V. A PT100 sensor is read through a temperature module inside the panel: white wire to S, both red wires to −. Its value is the temperature in tenths of a degree (25.0 °C reads 250).</li>
+</ul>
+<p>Drag devices from the right onto the board or onto the bench below it. Drag from one terminal to another to draw a wire. Drag the middle of a wire to bend it at any angle; hold <kbd>Shift</kbd> for a 90° bend. Double-click a bend to remove it, drag a wire end to move it to another terminal, and right-click a wire to change its colour, make it straight or curvy, or delete it. New wires are straight; Tools &gt; Options can make them curvy.</p>
+<p>At 100% zoom the board fills the width of the window. <kbd>Ctrl</kbd> + mouse wheel zooms in and out, keeping the top-left corner in place.</p>
+<p> <strong>Check wiring</strong> finds short circuits, wires to nowhere and duplicate wires, and gently warns about a motor that is not earthed.</p>
+
+<h2>Simulate</h2>
+<p>Press <strong>Simulate</strong> on the toolbar (or <kbd>F5</kbd>) to put the PLC into RUN. The program then runs scan by scan in real time, with real timers, and follows exactly the wires you drew:</p>
+<ul>
+  <li>Click the switches and push buttons. A momentary one works while you hold the mouse button; a maintained one changes over with each click.</li>
+  <li>Click a sensor to put a target in front of it, and again to take it away.</li>
+  <li>Click a potentiometer or PT100 for its slider.</li>
+  <li>Lamps light, motors turn (backwards if wired the wrong way round), buzzers and hooters sound.</li>
+  <li>A short circuit switches the 24 V supply off, like a real fuse. Stop, correct the wiring and run again.</li>
+</ul>
+<p>Press <strong>Stop</strong> (or <kbd>F5</kbd> again) to go back to STOP. Nothing can be changed while the simulation runs.</p>
+<h2>Projects and files</h2>
+<p>A project is saved as one <code>.vsaplc</code> file. When you save over an older file, the previous version is kept beside it as <code>.vsaplc.bak</code>, so you can always go back one step. Double-click a project file in Windows to open it in PLC Simulator.</p>
+
+<h2>Keyboard shortcuts</h2>
+<table>
+  <tr><td><kbd>Ctrl+N</kbd> / <kbd>Ctrl+O</kbd> / <kbd>Ctrl+S</kbd></td><td>New, open, save project</td></tr>
+  <tr><td><kbd>Ctrl+Shift+S</kbd></td><td>Save as</td></tr>
+  <tr><td><kbd>F5</kbd></td><td>Simulate: RUN or STOP</td></tr>
+  <tr><td><kbd>F1</kbd></td><td>This guide</td></tr>
+  <tr><td><kbd>F11</kbd></td><td>Full screen, for the classroom projector</td></tr>
+</table>
+
+<h2>Contact</h2>
+<p>PLC Simulator is developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar for Vidyasagar Robotics Academy. Questions and ideas are welcome at <a href="#" data-link="email">softinquiry@vsa.edu.in</a>. More software: <a href="#" data-link="website">vsa.edu.in/software</a>.</p>

@@ -1,0 +1,42 @@
+VSA Simulator
+Copyright (C) 2026 Vidyasagar Academy
+
+Developed by Prof. Dattaraj S. Vidyasagar & Prof. Yash D. Vidyasagar,
+for Vidyasagar Academy.
+
+Website: https://vsa.edu.in/software/
+E-mail:  softinquiry@vsa.edu.in
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, version 3 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the LICENSE file for details.
+
+Third-party components keep their own licences:
+- Tauri and its Rust libraries (MIT or Apache-2.0)
+- MicroPython v1.24.1 firmware for the simulated Raspberry Pi Pico W (MIT),
+  with the Raspberry Pi Pico SDK (BSD 3-Clause)
+- MicroPython v1.24.1 firmware for the simulated ESP32 (MIT), built with
+  Espressif's ESP-IDF (Apache-2.0)
+- ESP32 ROM code from Espressif's ROM ELF files, esp-rom-elfs (Apache-2.0)
+- MicroPython display drivers added to the simulated boards: ssd1306.py
+  from micropython-lib (MIT), lcd_api.py, machine_i2c_lcd.py,
+  esp8266_i2c_lcd.py and i2c_lcd.py from python_lcd (MIT), and
+  pico_i2c_lcd.py (MIT)
+- LCD character shapes from the Adafruit GFX Library "classic" font
+  (BSD License)
+- Microsoft Edge WebView2 runtime (Microsoft licence, part of Windows or
+  installed separately)
+See THIRD-PARTY-NOTICES.txt for their licence texts.
+
+The MicroPython firmware for the ESP8266 is NOT included with VSA Simulator.
+Its Espressif SDK may be used on ESP8266 chips only, so users who want to
+run MicroPython on the simulated ESP8266 download ESP8266_GENERIC from
+micropython.org themselves and add it with File > ESP8266 MicroPython
+firmware.
+
+Arduino, Raspberry Pi and Espressif are trademarks of their owners. VSA
+Simulator is compatible with their boards but is not made by them.

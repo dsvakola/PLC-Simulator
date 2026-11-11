@@ -1,0 +1,26 @@
+PLC Simulator
+Copyright (C) 2026 Vidyasagar Robotics Academy
+
+Developed by Prof. Dattaraj S. Vidyasagar & Prof. Yash D. Vidyasagar,
+for Vidyasagar Robotics Academy.
+
+Website: https://vsa.edu.in/software/
+E-mail:  softinquiry@vsa.edu.in
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, version 3 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the LICENSE file for details.
+
+Third-party components keep their own licences:
+- Tauri and its Rust libraries (MIT or Apache-2.0)
+- Microsoft Edge WebView2 runtime (Microsoft licence, part of Windows or
+  installed separately)
+See THIRD-PARTY-NOTICES.txt for their licence texts.
+
+PLC Simulator is an independent teaching program. It is not made by, and
+is not connected with, any maker of industrial controllers. Names of PLC
+families mentioned in its documentation are trademarks of their owners.

@@ -1,0 +1,23 @@
+[package]
+name = "plc-simulator"
+version = "0.0.6"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "PLC Simulator - learn PLC programming in ladder logic on a simulated CPU"
+authors = ["Prof. Dattaraj S. Vidyasagar", "Prof. Yash D. Vidyasagar"]
+
+[lib]
+name = "plc_simulator_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+plc-core = { path = "../crates/plc-core" }

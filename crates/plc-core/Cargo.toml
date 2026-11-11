@@ -1,0 +1,10 @@
+[package]
+name = "plc-core"
+version = "0.0.6"
+edition = "2021"
+license = "GPL-3.0-only"
+description = "PLC engine (ladder logic) and project files for PLC Simulator"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
