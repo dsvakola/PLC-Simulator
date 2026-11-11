@@ -377,3 +377,16 @@ export interface Prefs {
 }
 export const getPrefs = (): Promise<Prefs> => invoke("get_prefs");
 export const setPrefs = (prefs: Prefs): Promise<Prefs> => invoke("set_prefs", { prefs });
+
+// ---- SCADA connection from another PC ----
+
+export interface RemoteInfo {
+  /** For example http://192.168.1.20:8090 */
+  address: string;
+  /** The 4-digit code to type on the other PC. */
+  code: string;
+}
+export const remoteStart = (): Promise<RemoteInfo> => invoke("remote_start");
+export const remoteStop = (): Promise<void> => invoke("remote_stop");
+/** Hands the latest picture of the SCADA screen to the server. */
+export const remoteScreen = (screen: string): Promise<void> => invoke("remote_screen", { screen });

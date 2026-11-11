@@ -1,6 +1,6 @@
 # Privacy Policy for PLC Simulator
 
-**Last updated: 7 November 2026**
+**Last updated: 11 November 2026**
 
 PLC Simulator is made by Vidyasagar Robotics Academy (developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar). It is free software under the GNU General Public License v3.0 and runs entirely on your own computer.
 
@@ -9,6 +9,7 @@ PLC Simulator is made by Vidyasagar Robotics Academy (developed by Prof. Dattara
 - **It does not collect, store, send or share any personal information.**
 - It has no accounts, no advertising, no analytics and no tracking.
 - It does not connect to the internet by itself. The projects you open or save stay on your computer.
+- **SCADA connection from another PC** (Simulation menu) is off unless you switch it on. While it is on, PLC Simulator lets other computers on your own local network open the SCADA screen of the open project in a web browser, after typing a 4-digit code that the program shows. Only that screen is shown, and only its buttons, switches and sliders can be used. Nothing is sent to the internet, and the connection stops when you switch it off or close the program.
 - Your preferences (colour theme and similar) and the list of recent projects are saved on your own computer only, in the application's data folder. You can delete them at any time.
 - It asks for no access to your camera, microphone, location, contacts or other personal data.
 

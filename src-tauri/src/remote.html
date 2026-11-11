@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLC Simulator - SCADA screen</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #e9edf2; font-family: "Segoe UI", system-ui, sans-serif; color: #1b2430; }
+  header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #1b2430; color: #fff; }
+  header strong { font-size: 16px; }
+  #state { margin-left: auto; font-size: 13px; color: #b9c4d0; }
+  #login { max-width: 360px; margin: 80px auto; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.15); }
+  #login input { font-size: 28px; width: 140px; letter-spacing: 6px; text-align: center; padding: 6px; }
+  #login button { font-size: 16px; padding: 8px 18px; margin-left: 8px; }
+  #screen { padding: 12px; }
+  #screen svg { width: 100%; height: auto; max-height: calc(100vh - 80px); touch-action: none; user-select: none; }
+  .spin { transform-box: fill-box; transform-origin: center; animation: spin .5s linear infinite; }
+  .belt { animation: belt .6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes belt { to { transform: translateX(30px); } }
+</style>
+</head>
+<body>
+<header><strong>PLC Simulator · SCADA screen</strong><span id="state">Not connected</span></header>
+<div id="login">
+  <p>Type the 4-digit code shown on the PC that runs PLC Simulator.</p>
+  <input id="code" inputmode="numeric" maxlength="4" autocomplete="off"><button id="go">Connect</button>
+  <p id="err" style="color:#c0392b"></p>
+</div>
+<div id="screen" hidden></div>
+<script>
+  const params = new URLSearchParams(location.search);
+  let code = params.get("code") || "";
+  let items = [];
+  let last = "";
+  const screen = document.getElementById("screen");
+  const state = document.getElementById("state");
+  const act = (body) => fetch("/act?code=" + code, { method: "POST", body: JSON.stringify(body) }).catch(() => {});
+  async function poll() {
+    try {
+      const r = await fetch("/screen?code=" + code, { cache: "no-store" });
+      if (r.status === 403) { document.getElementById("err").textContent = "Wrong code."; showLogin(); return; }
+      const t = await r.text();
+      if (t && t !== last) {
+        last = t;
+        const s = JSON.parse(t);
+        items = s.items || [];
+        screen.innerHTML = s.svg || "";
+        state.textContent = s.running ? "Live" : "The simulation is stopped";
+      }
+    } catch (e) { state.textContent = "Connection lost, retrying..."; }
+    setTimeout(poll, 250);
+  }
+  function showLogin() { document.getElementById("login").hidden = false; screen.hidden = true; }
+  function start() {
+    document.getElementById("login").hidden = true; screen.hidden = false;
+    history.replaceState(null, "", "/?code=" + code); poll();
+  }
+  document.getElementById("go").onclick = () => { code = document.getElementById("code").value.trim(); start(); };
+  document.getElementById("code").onkeydown = (e) => { if (e.key === "Enter") document.getElementById("go").click(); };
+  // Where on the screen (in drawing units) the pointer is, and which item is there.
+  function at(e) {
+    const svg = screen.querySelector("svg"); if (!svg) return null;
+    const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+    const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    const it = items.find((i) => q.x >= i.x && q.x <= i.x + i.w && q.y >= i.y && q.y <= i.y + i.h);
+    return it ? { it, x: q.x } : null;
+  }
+  let held = null, sliding = null;
+  const sliderValue = (it, x) => { const f = Math.min(1, Math.max(0, (x - it.x - 18) / (it.w - 36))); return Math.round(it.min + (it.max - it.min) * f); };
+  screen.addEventListener("pointerdown", (e) => {
+    const h = at(e); if (!h) return;
+    if (h.it.kind === "button") { held = h.it; act({ id: h.it.id, action: "down" }); }
+    else if (h.it.kind === "switch") act({ id: h.it.id, action: "toggle" });
+    else if (h.it.kind === "slider") { sliding = h.it; act({ id: h.it.id, action: "value", value: sliderValue(h.it, h.x) }); }
+    screen.setPointerCapture(e.pointerId);
+  });
+  screen.addEventListener("pointermove", (e) => {
+    if (!sliding) return; const h = at(e); const svg = screen.querySelector("svg"); if (!svg) return;
+    const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    act({ id: sliding.id, action: "value", value: sliderValue(sliding, q.x) });
+  });
+  const release = () => { if (held) act({ id: held.id, action: "up" }); held = null; sliding = null; };
+  screen.addEventListener("pointerup", release);
+  screen.addEventListener("pointercancel", release);
+  if (code) start();
+</script>
+</body>
+</html>

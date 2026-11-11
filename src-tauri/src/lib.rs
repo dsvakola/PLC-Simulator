@@ -2,6 +2,7 @@ mod error;
 mod files;
 mod prefs;
 mod recent;
+mod remote;
 mod sim;
 
 use error::{AppError, AppResult};
@@ -92,6 +93,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .manage(sim::SimState::default())
+        .manage(remote::RemoteState::default())
         .invoke_handler(tauri::generate_handler![
             get_app_info,
             check_fbd,
@@ -106,6 +108,9 @@ pub fn run() {
             sim::sim_marker,
             sim::sim_analog_marker,
             check_scada,
+            remote::remote_start,
+            remote::remote_stop,
+            remote::remote_screen,
             files::new_project,
             files::save_project,
             files::open_project,

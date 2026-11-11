@@ -477,6 +477,36 @@ export class ScadaEditor {
     showContextMenu(e.clientX, e.clientY, items);
   };
 
+  // ----- The picture for another PC -----
+
+  /** The screen as the other PC shows it: the picture and where its items are. */
+  publicScreen(): string {
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SCREEN_W} ${SCREEN_H}"><rect x="0" y="0" width="${SCREEN_W}" height="${SCREEN_H}" rx="6" fill="#f7f9fb" stroke="#8d96a3" stroke-width="2"/>`;
+    for (const it of this.s.items) svg += `<g transform="translate(${it.x} ${it.y})">${drawItem(it, this.valueOf(it), false)}</g>`;
+    svg += "</svg>";
+    const items = this.s.items
+      .filter((it) => KINDS[it.kind]?.writes && it.tag)
+      .map((it) => {
+        const [min, max] = range(it);
+        return { id: it.id, kind: it.kind, x: it.x, y: it.y, w: it.w, h: it.h, min, max };
+      });
+    return JSON.stringify({ svg, items, running: this.sim !== null });
+  }
+
+  /** What the other PC did with an item. */
+  remoteAction(id: number, action: string, value: number): void {
+    const it = this.item(id);
+    if (!it || !it.tag || !this.sim) return;
+    if (action === "down" || action === "up") {
+      if (it.kind === "button") this.hooks.press(it.tag, action === "down");
+    } else if (action === "toggle") {
+      if (it.kind === "switch") this.hooks.toggle(it.tag, this.valueOf(it) !== true);
+    } else if (action === "value" && it.kind === "slider") {
+      const [lo, hi] = range(it);
+      this.hooks.analog(it.tag, Math.min(hi, Math.max(lo, value)));
+    }
+  }
+
   // ----- Drawing -----
 
   private valueOf(it: ScadaItem): boolean | number | null {

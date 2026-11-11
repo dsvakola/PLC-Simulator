@@ -1,5 +1,6 @@
 import "./styles.css";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { listen } from "@tauri-apps/api/event";
 import {
   checkFbd,
   checkPanel,
@@ -16,6 +17,9 @@ import {
   setPrefs,
   checkScada,
   simAnalogMarker,
+  remoteScreen,
+  remoteStart,
+  remoteStop,
   simClock,
   simMarker,
   simPause,
@@ -80,6 +84,8 @@ const state = {
   tripped: false,
   /** Tools > Simulated clock: the PC clock, or a date and time set by the teacher, and its speed. */
   simClock: { usePc: true, date: "", time: "08:00", speed: 1 },
+  /** Another PC may show and operate the SCADA screen. */
+  remote: null as { address: string; code: string } | null,
 };
 
 let editor: FbdEditor;
@@ -453,6 +459,7 @@ function onFrame(f: SimFrame): void {
   if (!state.running) return;
   panelEditor?.setSim(f);
   scadaEditor.setSim(f);
+  publishScreen();
   editor.setLive(f.blocks);
   strip.update(f);
   const kinds = new Map((panelEditor?.data.devices ?? []).map((d) => [d.id, d.kind]));
@@ -508,6 +515,7 @@ async function stopSim(reason?: string): Promise<void> {
   }
   panelEditor?.setSim(null);
   scadaEditor.setSim(null);
+  publishScreen();
   editor.setLive(null);
   strip.hide();
   showSimButton();
@@ -665,6 +673,47 @@ async function checkWiring(): Promise<void> {
 }
 
 // ---------- SCADA screen ----------
+
+// ---------- SCADA connection from another PC ----------
+
+let remoteTimer = 0;
+
+/** Sends the latest picture of the SCADA screen to the other PC (at most a few times a second). */
+function publishScreen(): void {
+  if (!state.remote || remoteTimer) return;
+  remoteTimer = window.setTimeout(() => {
+    remoteTimer = 0;
+    if (state.remote) remoteScreen(scadaEditor.publicScreen()).catch(() => undefined);
+  }, 150);
+}
+
+function showRemoteInfo(): void {
+  const r = state.remote;
+  if (!r) return;
+  void ask(
+    "SCADA connection from another PC",
+    `On the other PC (on the same network), open its web browser and go to:\n\n${r.address}\n\nType this code there:  ${r.code}\n\nThe other PC then shows this SCADA screen live and can use its buttons, switches and sliders while the simulation runs. If Windows asks, allow PLC Simulator on private networks.\n\nSwitch the connection off again in the Simulation menu.`,
+    [{ id: "ok", label: "OK", primary: true }],
+  );
+}
+
+async function toggleRemote(): Promise<void> {
+  try {
+    if (state.remote) {
+      await remoteStop();
+      state.remote = null;
+      setStatus("SCADA connection from another PC is off.");
+      return;
+    }
+    state.remote = await remoteStart();
+    publishScreen();
+    setStatus(`Another PC can open the SCADA screen at ${state.remote.address} (code ${state.remote.code}).`);
+    showRemoteInfo();
+  } catch (e) {
+    state.remote = null;
+    showError(errorText(e));
+  }
+}
 
 async function checkScreen(): Promise<void> {
   try {
@@ -836,7 +885,6 @@ function showShortcuts(): void {
 
 // ---------- Menus ----------
 
-const soon = (label: string, shortcut?: string): MenuItem => ({ label, shortcut, enabled: () => false });
 
 function menus(): MenuDef[] {
   return [
@@ -969,7 +1017,8 @@ function menus(): MenuDef[] {
       items: () => [
         { label: "Simulate on the Control Panel", shortcut: "F3", checked: () => state.running, action: () => void toggleSim() },
         "-",
-        soon("Allow SCADA connection from another PC"),
+        { label: "Allow SCADA connection from another PC", checked: () => state.remote !== null, action: () => void toggleRemote() },
+        { label: "Show the address and code…", enabled: () => state.remote !== null, action: showRemoteInfo },
       ],
     },
     {
@@ -1176,6 +1225,7 @@ async function main(): Promise<void> {
   scadaEditor = new ScadaEditor($("#scada-canvas"), {
     changed: () => {
       markDirty();
+      publishScreen();
     },
     status: setStatus,
     history: (u, r) => setHistory("scada", u, r),
@@ -1195,6 +1245,10 @@ async function main(): Promise<void> {
     },
   });
   buildScadaPalette($("#scada-palette"));
+  // What another PC does on the SCADA screen.
+  void listen<{ id: number; action: string; value: number }>("remote-act", (e) => {
+    scadaEditor.remoteAction(e.payload.id, e.payload.action, e.payload.value);
+  });
   strip = new SimStrip($("#sim-bar"), {
     press: (target, down) => void simPress(target, down).catch((e: unknown) => showError(errorText(e))),
     pause: (paused) => {
