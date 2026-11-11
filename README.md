@@ -7,7 +7,7 @@ the PLC runs scan by scan in real time, lamps light, motors turn, and the
 wires that are on turn red.
 
 Developed by Prof. Dattaraj S. Vidyasagar & Prof. Yash D. Vidyasagar, for
-Vidyasagar Robotics Academy.
+Vidyasagar Academy.
 Website: https://vsa.edu.in/software/ · E-mail: softinquiry@vsa.edu.in
 
 ## What it does

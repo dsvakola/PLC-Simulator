@@ -12,6 +12,8 @@ use tauri_plugin_opener::OpenerExt;
 
 const WEBSITE: &str = "https://vsa.edu.in/software/";
 const EMAIL: &str = "mailto:softinquiry@vsa.edu.in";
+const SOURCE: &str = "https://github.com/dsvakola/PLC-Simulator";
+const SOFTWARE: &str = "https://github.com/dsvakola/software";
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -33,7 +35,7 @@ fn get_app_info(app: AppHandle) -> AppInfo {
         name: info.name.clone(),
         version: info.version.to_string(),
         developers: vec!["Prof. Dattaraj S. Vidyasagar", "Prof. Yash D. Vidyasagar"],
-        organisation: "Vidyasagar Robotics Academy",
+        organisation: "Vidyasagar Academy",
         website: "vsa.edu.in/software",
         email: "softinquiry@vsa.edu.in",
         licence: "GNU General Public License v3.0 (GPL 3.0)",
@@ -45,15 +47,21 @@ fn get_app_info(app: AppHandle) -> AppInfo {
 enum Link {
     Website,
     Email,
+    /// The source code of this program on GitHub.
+    Source,
+    /// More software of Vidyasagar Academy on GitHub.
+    Software,
 }
 
-/// Only the academy website and e-mail can be opened; the window never
+/// Only the academy website, e-mail and GitHub pages can be opened; the window never
 /// passes a free-form address.
 #[tauri::command]
 fn open_link(app: AppHandle, link: Link) -> AppResult<()> {
     let url = match link {
         Link::Website => WEBSITE,
         Link::Email => EMAIL,
+        Link::Source => SOURCE,
+        Link::Software => SOFTWARE,
     };
     app.opener()
         .open_url(url, None::<&str>)

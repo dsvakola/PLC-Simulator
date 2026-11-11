@@ -2,7 +2,7 @@
 
 **Last updated: 11 November 2026**
 
-PLC Simulator is made by Vidyasagar Robotics Academy (developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar). It is free software under the GNU General Public License v3.0 and runs entirely on your own computer.
+PLC Simulator is made by Vidyasagar Academy (developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar). It is free software under the GNU General Public License v3.0 and runs entirely on your own computer.
 
 ## What PLC Simulator does with your data
 
@@ -15,7 +15,7 @@ PLC Simulator is made by Vidyasagar Robotics Academy (developed by Prof. Dattara
 
 ## Links
 
-The website and e-mail links in the About box and the User Guide open your own web browser or mail program only when you click them. That visit is outside the app and follows the privacy policy of the website you visit. PLC Simulator opens only the website of Vidyasagar Robotics Academy (https://vsa.edu.in/) and its support e-mail address.
+The website and e-mail links in the About box and the User Guide open your own web browser or mail program only when you click them. That visit is outside the app and follows the privacy policy of the website you visit. PLC Simulator opens only the website of Vidyasagar Academy (https://vsa.edu.in/), its GitHub pages (https://github.com/dsvakola/PLC-Simulator and https://github.com/dsvakola/software) and its support e-mail address.
 
 ## Children
 
@@ -27,4 +27,4 @@ If this policy ever changes, the new version will be published on this page with
 
 ## Contact
 
-Vidyasagar Robotics Academy, softinquiry@vsa.edu.in, https://vsa.edu.in/
+Vidyasagar Academy, softinquiry@vsa.edu.in, https://vsa.edu.in/

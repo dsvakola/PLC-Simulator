@@ -22,7 +22,7 @@
     <!-- PublisherDisplayName: from Partner Center. -->
     <PublisherDisplayName>Vidyasagar Academy</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <Description>PLC Simulator lets students, teachers and hobbyists write PLC programs in ladder logic, run them on a simulated CPU and watch the inputs, outputs and power flow live. Fully offline. Developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar for Vidyasagar Robotics Academy.</Description>
+    <Description>PLC Simulator lets students, teachers and hobbyists draw PLC programs as function block diagrams, wire field devices to a PLC training panel, build SCADA operator screens, and simulate it all in real time. Fully offline. Developed by Prof. Dattaraj S. Vidyasagar and Prof. Yash D. Vidyasagar for Vidyasagar Academy.</Description>
   </Properties>
 
   <Dependencies>

@@ -806,7 +806,8 @@ const panelCatalog = () => layoutCache?.catalog ?? [];
 
 async function applyPrefs(p: Prefs, saveThem: boolean): Promise<void> {
   state.prefs = p;
-  document.documentElement.dataset.theme = p.theme;
+  // The program has one look: the light theme.
+  document.documentElement.dataset.theme = "light";
   if (panelEditor) panelEditor.curvyWires = p.curvyWires ?? false;
   if (saveThem) {
     try {
@@ -820,17 +821,6 @@ async function applyPrefs(p: Prefs, saveThem: boolean): Promise<void> {
 async function showOptions(): Promise<void> {
   const r = await askForm("Options", [
     {
-      id: "theme",
-      label: "Colour theme",
-      type: "select",
-      value: state.prefs.theme,
-      options: [
-        ["light", "Light (classroom projector)"],
-        ["dark", "Dark (control room)"],
-      ],
-      hint: "The drawing area always stays white, so the black block borders show well.",
-    },
-    {
       id: "curvyWires",
       label: "New wires on the Control Panel are curvy",
       type: "check",
@@ -839,7 +829,7 @@ async function showOptions(): Promise<void> {
     },
   ]);
   if (!r) return;
-  await applyPrefs({ ...state.prefs, theme: r.theme === "dark" ? "dark" : "light", curvyWires: r.curvyWires === true }, true);
+  await applyPrefs({ ...state.prefs, theme: "light", curvyWires: r.curvyWires === true }, true);
 }
 
 async function toggleFullscreen(): Promise<void> {
@@ -955,22 +945,6 @@ function menus(): MenuDef[] {
         { label: "Zoom out", shortcut: "Ctrl+-", action: () => active().zoomBy(0.8) },
         { label: "Zoom 100%", shortcut: "Ctrl+0", action: () => active().setZoom(1) },
         { label: "Fit in window", action: () => active().fit() },
-        "-",
-        {
-          label: "Theme",
-          submenu: () => [
-            {
-              label: "Light (classroom projector)",
-              checked: () => state.prefs.theme === "light",
-              action: () => void applyPrefs({ ...state.prefs, theme: "light" }, true),
-            },
-            {
-              label: "Dark (control room)",
-              checked: () => state.prefs.theme === "dark",
-              action: () => void applyPrefs({ ...state.prefs, theme: "dark" }, true),
-            },
-          ],
-        },
         "-",
         { label: "Full screen", shortcut: "F11", action: () => void toggleFullscreen() },
       ],

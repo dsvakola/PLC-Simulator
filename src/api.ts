@@ -14,7 +14,7 @@ export interface AppInfo {
   licence: string;
 }
 
-export type Link = "website" | "email";
+export type Link = "website" | "email" | "source" | "software";
 
 export const getAppInfo = (): Promise<AppInfo> => invoke("get_app_info");
 export const openLink = (link: Link): Promise<void> => invoke("open_link", { link });

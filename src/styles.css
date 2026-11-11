@@ -206,6 +206,7 @@ kbd,
   text-align: left;
   cursor: default;
   white-space: nowrap;
+  color: var(--text);
 }
 
 .menu-item:hover:not(:disabled) {
